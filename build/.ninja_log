@@ -1,0 +1,25 @@
+# ninja log v5
+1	1658	1675168478521233730	CMakeFiles/Ares_CV.dir/main.cpp.o	f27459e6473d26ff
+1	1185	1675156938575191756	CMakeFiles/Ares_CV.dir/camera/src/camera_api.cpp.o	c23408134c24bc23
+1	1694	1675168478553234756	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+2	422	1675164922910826022	CMakeFiles/Ares_CV.dir/serial/serial.cpp.o	cc3e823362d2fadf
+1762	1891	1675166582223416130	Ares_CV	b2ed8f691c75a488
+1	1664	1675168545781145987	CMakeFiles/Ares_CV.dir/main.cpp.o	f27459e6473d26ff
+1	1687	1675168545805108519	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1	16	1675168575756915277	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+16	130	1675168575876827524	Ares_CV	b2ed8f691c75a488
+1	1630	1675168584339224671	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1	1659	1675168596512688523	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1	1533	1675168606124451235	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1533	1652	1675168606240404275	Ares_CV	b2ed8f691c75a488
+1	1764	1675168743227456024	CMakeFiles/Ares_CV.dir/main.cpp.o	f27459e6473d26ff
+1764	1900	1675168743363647863	Ares_CV	b2ed8f691c75a488
+1	1637	1675169207637883862	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1	1680	1675169207677888903	CMakeFiles/Ares_CV.dir/main.cpp.o	f27459e6473d26ff
+1680	1798	1675169207797904028	Ares_CV	b2ed8f691c75a488
+1	1699	1675169354517609028	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1	1599	1675169508690257481	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626
+1	1680	1675169508770249335	CMakeFiles/Ares_CV.dir/main.cpp.o	f27459e6473d26ff
+1680	1807	1675169508898236301	Ares_CV	b2ed8f691c75a488
+1	1664	1675169802544483212	CMakeFiles/Ares_CV.dir/main.cpp.o	f27459e6473d26ff
+1	1684	1675169802564483558	CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o	b43fce4316134626

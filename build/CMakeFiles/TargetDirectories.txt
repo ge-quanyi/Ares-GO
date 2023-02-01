@@ -1,0 +1,3 @@
+/home/quonone/workspace/Armor_project/build/CMakeFiles/Ares_CV.dir
+/home/quonone/workspace/Armor_project/build/CMakeFiles/edit_cache.dir
+/home/quonone/workspace/Armor_project/build/CMakeFiles/rebuild_cache.dir
