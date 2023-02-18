@@ -230,8 +230,38 @@ Crow_DIR:PATH=/usr/local/lib/cmake/Crow
 //The directory containing a CMake configuration file for OpenCV.
 OpenCV_DIR:PATH=/usr/local/lib/cmake/opencv4
 
+//The directory containing a CMake configuration file for OpenVINO.
+OpenVINO_DIR:PATH=/opt/intel/openvino2022/runtime/cmake
+
+//Value Computed by CMake
+camera_BINARY_DIR:STATIC=/home/quonone/workspace/Armor_project/build/camera
+
+//Value Computed by CMake
+camera_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+camera_SOURCE_DIR:STATIC=/home/quonone/workspace/Armor_project/camera
+
+//Value Computed by CMake
+detector_BINARY_DIR:STATIC=/home/quonone/workspace/Armor_project/build/detector
+
+//Value Computed by CMake
+detector_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+detector_SOURCE_DIR:STATIC=/home/quonone/workspace/Armor_project/detector
+
 //The directory containing a CMake configuration file for fmt.
 fmt_DIR:PATH=/usr/local/lib/cmake/fmt
+
+//Value Computed by CMake
+serial_BINARY_DIR:STATIC=/home/quonone/workspace/Armor_project/build/serial
+
+//Value Computed by CMake
+serial_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+serial_SOURCE_DIR:STATIC=/home/quonone/workspace/Armor_project/serial
 
 
 ########################
@@ -338,7 +368,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=4
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -382,7 +412,9 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding OpenCV
-FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr/local][v4.6.0(4)]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr/local][v4.6.0()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding asio
 FIND_PACKAGE_MESSAGE_DETAILS_asio:INTERNAL=[/usr/include][v()]
 //linker supports push/pop state

@@ -47,49 +47,15 @@ cmake_ninja_workdir = /home/quonone/workspace/Armor_project/build/
 #############################################
 # Order-only phony target for Ares_CV
 
-build cmake_object_order_depends_target_Ares_CV: phony || CMakeFiles/Ares_CV.dir
+build cmake_object_order_depends_target_Ares_CV: phony || cmake_object_order_depends_target_camera cmake_object_order_depends_target_detector cmake_object_order_depends_target_serial
 
 build CMakeFiles/Ares_CV.dir/main.cpp.o: CXX_COMPILER__Ares_CV_Debug /home/quonone/workspace/Armor_project/main.cpp || cmake_object_order_depends_target_Ares_CV
+  DEFINES = -DIE_THREAD=IE_THREAD_TBB -DTBB_PREVIEW_WAITING_FOR_WORKERS=1
   DEP_FILE = CMakeFiles/Ares_CV.dir/main.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
+  FLAGS = -g -fdiagnostics-color=always -Wno-error=deprecated-declarations -std=gnu++14
+  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4 -isystem /opt/intel/openvino2022/runtime/include -isystem /opt/intel/openvino2022/runtime/include/ie
   OBJECT_DIR = CMakeFiles/Ares_CV.dir
   OBJECT_FILE_DIR = CMakeFiles/Ares_CV.dir
-
-build CMakeFiles/Ares_CV.dir/camera/src/camera.cpp.o: CXX_COMPILER__Ares_CV_Debug /home/quonone/workspace/Armor_project/camera/src/camera.cpp || cmake_object_order_depends_target_Ares_CV
-  DEP_FILE = CMakeFiles/Ares_CV.dir/camera/src/camera.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
-  OBJECT_DIR = CMakeFiles/Ares_CV.dir
-  OBJECT_FILE_DIR = CMakeFiles/Ares_CV.dir/camera/src
-
-build CMakeFiles/Ares_CV.dir/camera/src/camera_api.cpp.o: CXX_COMPILER__Ares_CV_Debug /home/quonone/workspace/Armor_project/camera/src/camera_api.cpp || cmake_object_order_depends_target_Ares_CV
-  DEP_FILE = CMakeFiles/Ares_CV.dir/camera/src/camera_api.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
-  OBJECT_DIR = CMakeFiles/Ares_CV.dir
-  OBJECT_FILE_DIR = CMakeFiles/Ares_CV.dir/camera/src
-
-build CMakeFiles/Ares_CV.dir/serial/serial.cpp.o: CXX_COMPILER__Ares_CV_Debug /home/quonone/workspace/Armor_project/serial/serial.cpp || cmake_object_order_depends_target_Ares_CV
-  DEP_FILE = CMakeFiles/Ares_CV.dir/serial/serial.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
-  OBJECT_DIR = CMakeFiles/Ares_CV.dir
-  OBJECT_FILE_DIR = CMakeFiles/Ares_CV.dir/serial
-
-build CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o: CXX_COMPILER__Ares_CV_Debug /home/quonone/workspace/Armor_project/detector/src/armor_detect.cpp || cmake_object_order_depends_target_Ares_CV
-  DEP_FILE = CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
-  OBJECT_DIR = CMakeFiles/Ares_CV.dir
-  OBJECT_FILE_DIR = CMakeFiles/Ares_CV.dir/detector/src
-
-build CMakeFiles/Ares_CV.dir/detector/src/detector.cpp.o: CXX_COMPILER__Ares_CV_Debug /home/quonone/workspace/Armor_project/detector/src/detector.cpp || cmake_object_order_depends_target_Ares_CV
-  DEP_FILE = CMakeFiles/Ares_CV.dir/detector/src/detector.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
-  OBJECT_DIR = CMakeFiles/Ares_CV.dir
-  OBJECT_FILE_DIR = CMakeFiles/Ares_CV.dir/detector/src
 
 
 # =============================================================================
@@ -99,9 +65,9 @@ build CMakeFiles/Ares_CV.dir/detector/src/detector.cpp.o: CXX_COMPILER__Ares_CV_
 #############################################
 # Link the executable Ares_CV
 
-build Ares_CV: CXX_EXECUTABLE_LINKER__Ares_CV_Debug CMakeFiles/Ares_CV.dir/main.cpp.o CMakeFiles/Ares_CV.dir/camera/src/camera.cpp.o CMakeFiles/Ares_CV.dir/camera/src/camera_api.cpp.o CMakeFiles/Ares_CV.dir/serial/serial.cpp.o CMakeFiles/Ares_CV.dir/detector/src/armor_detect.cpp.o CMakeFiles/Ares_CV.dir/detector/src/detector.cpp.o | /usr/local/lib/libopencv_gapi.so.4.6.0 /usr/local/lib/libopencv_stitching.so.4.6.0 /usr/local/lib/libopencv_alphamat.so.4.6.0 /usr/local/lib/libopencv_aruco.so.4.6.0 /usr/local/lib/libopencv_barcode.so.4.6.0 /usr/local/lib/libopencv_bgsegm.so.4.6.0 /usr/local/lib/libopencv_bioinspired.so.4.6.0 /usr/local/lib/libopencv_ccalib.so.4.6.0 /usr/local/lib/libopencv_dnn_objdetect.so.4.6.0 /usr/local/lib/libopencv_dnn_superres.so.4.6.0 /usr/local/lib/libopencv_dpm.so.4.6.0 /usr/local/lib/libopencv_face.so.4.6.0 /usr/local/lib/libopencv_freetype.so.4.6.0 /usr/local/lib/libopencv_fuzzy.so.4.6.0 /usr/local/lib/libopencv_hfs.so.4.6.0 /usr/local/lib/libopencv_img_hash.so.4.6.0 /usr/local/lib/libopencv_intensity_transform.so.4.6.0 /usr/local/lib/libopencv_line_descriptor.so.4.6.0 /usr/local/lib/libopencv_mcc.so.4.6.0 /usr/local/lib/libopencv_quality.so.4.6.0 /usr/local/lib/libopencv_rapid.so.4.6.0 /usr/local/lib/libopencv_reg.so.4.6.0 /usr/local/lib/libopencv_rgbd.so.4.6.0 /usr/local/lib/libopencv_saliency.so.4.6.0 /usr/local/lib/libopencv_stereo.so.4.6.0 /usr/local/lib/libopencv_structured_light.so.4.6.0 /usr/local/lib/libopencv_superres.so.4.6.0 /usr/local/lib/libopencv_surface_matching.so.4.6.0 /usr/local/lib/libopencv_tracking.so.4.6.0 /usr/local/lib/libopencv_videostab.so.4.6.0 /usr/local/lib/libopencv_wechat_qrcode.so.4.6.0 /usr/local/lib/libopencv_xfeatures2d.so.4.6.0 /usr/local/lib/libopencv_xobjdetect.so.4.6.0 /usr/local/lib/libopencv_xphoto.so.4.6.0 /usr/local/lib/libfmt.a /usr/lib/libgxiapi.so /usr/local/lib/libopencv_shape.so.4.6.0 /usr/local/lib/libopencv_highgui.so.4.6.0 /usr/local/lib/libopencv_datasets.so.4.6.0 /usr/local/lib/libopencv_plot.so.4.6.0 /usr/local/lib/libopencv_text.so.4.6.0 /usr/local/lib/libopencv_ml.so.4.6.0 /usr/local/lib/libopencv_phase_unwrapping.so.4.6.0 /usr/local/lib/libopencv_optflow.so.4.6.0 /usr/local/lib/libopencv_ximgproc.so.4.6.0 /usr/local/lib/libopencv_video.so.4.6.0 /usr/local/lib/libopencv_videoio.so.4.6.0 /usr/local/lib/libopencv_imgcodecs.so.4.6.0 /usr/local/lib/libopencv_objdetect.so.4.6.0 /usr/local/lib/libopencv_calib3d.so.4.6.0 /usr/local/lib/libopencv_dnn.so.4.6.0 /usr/local/lib/libopencv_features2d.so.4.6.0 /usr/local/lib/libopencv_flann.so.4.6.0 /usr/local/lib/libopencv_photo.so.4.6.0 /usr/local/lib/libopencv_imgproc.so.4.6.0 /usr/local/lib/libopencv_core.so.4.6.0
+build Ares_CV: CXX_EXECUTABLE_LINKER__Ares_CV_Debug CMakeFiles/Ares_CV.dir/main.cpp.o | camera/libcamera.a serial/libserial.a detector/libdetector.a /usr/lib/libgxiapi.so /usr/local/lib/libfmt.a /usr/local/lib/libopencv_gapi.so.4.6.0 /usr/local/lib/libopencv_stitching.so.4.6.0 /usr/local/lib/libopencv_alphamat.so.4.6.0 /usr/local/lib/libopencv_aruco.so.4.6.0 /usr/local/lib/libopencv_barcode.so.4.6.0 /usr/local/lib/libopencv_bgsegm.so.4.6.0 /usr/local/lib/libopencv_bioinspired.so.4.6.0 /usr/local/lib/libopencv_ccalib.so.4.6.0 /usr/local/lib/libopencv_dnn_objdetect.so.4.6.0 /usr/local/lib/libopencv_dnn_superres.so.4.6.0 /usr/local/lib/libopencv_dpm.so.4.6.0 /usr/local/lib/libopencv_face.so.4.6.0 /usr/local/lib/libopencv_freetype.so.4.6.0 /usr/local/lib/libopencv_fuzzy.so.4.6.0 /usr/local/lib/libopencv_hfs.so.4.6.0 /usr/local/lib/libopencv_img_hash.so.4.6.0 /usr/local/lib/libopencv_intensity_transform.so.4.6.0 /usr/local/lib/libopencv_line_descriptor.so.4.6.0 /usr/local/lib/libopencv_mcc.so.4.6.0 /usr/local/lib/libopencv_quality.so.4.6.0 /usr/local/lib/libopencv_rapid.so.4.6.0 /usr/local/lib/libopencv_reg.so.4.6.0 /usr/local/lib/libopencv_rgbd.so.4.6.0 /usr/local/lib/libopencv_saliency.so.4.6.0 /usr/local/lib/libopencv_stereo.so.4.6.0 /usr/local/lib/libopencv_structured_light.so.4.6.0 /usr/local/lib/libopencv_phase_unwrapping.so.4.6.0 /usr/local/lib/libopencv_superres.so.4.6.0 /usr/local/lib/libopencv_optflow.so.4.6.0 /usr/local/lib/libopencv_surface_matching.so.4.6.0 /usr/local/lib/libopencv_tracking.so.4.6.0 /usr/local/lib/libopencv_highgui.so.4.6.0 /usr/local/lib/libopencv_datasets.so.4.6.0 /usr/local/lib/libopencv_plot.so.4.6.0 /usr/local/lib/libopencv_text.so.4.6.0 /usr/local/lib/libopencv_videostab.so.4.6.0 /usr/local/lib/libopencv_videoio.so.4.6.0 /usr/local/lib/libopencv_wechat_qrcode.so.4.6.0 /usr/local/lib/libopencv_xfeatures2d.so.4.6.0 /usr/local/lib/libopencv_ml.so.4.6.0 /usr/local/lib/libopencv_shape.so.4.6.0 /usr/local/lib/libopencv_ximgproc.so.4.6.0 /usr/local/lib/libopencv_video.so.4.6.0 /usr/local/lib/libopencv_xobjdetect.so.4.6.0 /usr/local/lib/libopencv_imgcodecs.so.4.6.0 /usr/local/lib/libopencv_objdetect.so.4.6.0 /usr/local/lib/libopencv_calib3d.so.4.6.0 /usr/local/lib/libopencv_dnn.so.4.6.0 /usr/local/lib/libopencv_features2d.so.4.6.0 /usr/local/lib/libopencv_flann.so.4.6.0 /usr/local/lib/libopencv_xphoto.so.4.6.0 /usr/local/lib/libopencv_photo.so.4.6.0 /usr/local/lib/libopencv_imgproc.so.4.6.0 /usr/local/lib/libopencv_core.so.4.6.0 /opt/intel/openvino2022/runtime/lib/intel64/libopenvino.so.2022.3.0 || camera/libcamera.a detector/libdetector.a serial/libserial.a
   FLAGS = -g
-  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  /usr/local/lib/libopencv_gapi.so.4.6.0  /usr/local/lib/libopencv_stitching.so.4.6.0  /usr/local/lib/libopencv_alphamat.so.4.6.0  /usr/local/lib/libopencv_aruco.so.4.6.0  /usr/local/lib/libopencv_barcode.so.4.6.0  /usr/local/lib/libopencv_bgsegm.so.4.6.0  /usr/local/lib/libopencv_bioinspired.so.4.6.0  /usr/local/lib/libopencv_ccalib.so.4.6.0  /usr/local/lib/libopencv_dnn_objdetect.so.4.6.0  /usr/local/lib/libopencv_dnn_superres.so.4.6.0  /usr/local/lib/libopencv_dpm.so.4.6.0  /usr/local/lib/libopencv_face.so.4.6.0  /usr/local/lib/libopencv_freetype.so.4.6.0  /usr/local/lib/libopencv_fuzzy.so.4.6.0  /usr/local/lib/libopencv_hfs.so.4.6.0  /usr/local/lib/libopencv_img_hash.so.4.6.0  /usr/local/lib/libopencv_intensity_transform.so.4.6.0  /usr/local/lib/libopencv_line_descriptor.so.4.6.0  /usr/local/lib/libopencv_mcc.so.4.6.0  /usr/local/lib/libopencv_quality.so.4.6.0  /usr/local/lib/libopencv_rapid.so.4.6.0  /usr/local/lib/libopencv_reg.so.4.6.0  /usr/local/lib/libopencv_rgbd.so.4.6.0  /usr/local/lib/libopencv_saliency.so.4.6.0  /usr/local/lib/libopencv_stereo.so.4.6.0  /usr/local/lib/libopencv_structured_light.so.4.6.0  /usr/local/lib/libopencv_superres.so.4.6.0  /usr/local/lib/libopencv_surface_matching.so.4.6.0  /usr/local/lib/libopencv_tracking.so.4.6.0  /usr/local/lib/libopencv_videostab.so.4.6.0  /usr/local/lib/libopencv_wechat_qrcode.so.4.6.0  /usr/local/lib/libopencv_xfeatures2d.so.4.6.0  /usr/local/lib/libopencv_xobjdetect.so.4.6.0  /usr/local/lib/libopencv_xphoto.so.4.6.0  /usr/local/lib/libfmt.a  -lgxiapi  /usr/local/lib/libopencv_shape.so.4.6.0  /usr/local/lib/libopencv_highgui.so.4.6.0  /usr/local/lib/libopencv_datasets.so.4.6.0  /usr/local/lib/libopencv_plot.so.4.6.0  /usr/local/lib/libopencv_text.so.4.6.0  /usr/local/lib/libopencv_ml.so.4.6.0  /usr/local/lib/libopencv_phase_unwrapping.so.4.6.0  /usr/local/lib/libopencv_optflow.so.4.6.0  /usr/local/lib/libopencv_ximgproc.so.4.6.0  /usr/local/lib/libopencv_video.so.4.6.0  /usr/local/lib/libopencv_videoio.so.4.6.0  /usr/local/lib/libopencv_imgcodecs.so.4.6.0  /usr/local/lib/libopencv_objdetect.so.4.6.0  /usr/local/lib/libopencv_calib3d.so.4.6.0  /usr/local/lib/libopencv_dnn.so.4.6.0  /usr/local/lib/libopencv_features2d.so.4.6.0  /usr/local/lib/libopencv_flann.so.4.6.0  /usr/local/lib/libopencv_photo.so.4.6.0  /usr/local/lib/libopencv_imgproc.so.4.6.0  /usr/local/lib/libopencv_core.so.4.6.0
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib:/opt/intel/openvino2022/runtime/lib/intel64  camera/libcamera.a  serial/libserial.a  detector/libdetector.a  -lgxiapi  /usr/local/lib/libfmt.a  /usr/local/lib/libopencv_gapi.so.4.6.0  /usr/local/lib/libopencv_stitching.so.4.6.0  /usr/local/lib/libopencv_alphamat.so.4.6.0  /usr/local/lib/libopencv_aruco.so.4.6.0  /usr/local/lib/libopencv_barcode.so.4.6.0  /usr/local/lib/libopencv_bgsegm.so.4.6.0  /usr/local/lib/libopencv_bioinspired.so.4.6.0  /usr/local/lib/libopencv_ccalib.so.4.6.0  /usr/local/lib/libopencv_dnn_objdetect.so.4.6.0  /usr/local/lib/libopencv_dnn_superres.so.4.6.0  /usr/local/lib/libopencv_dpm.so.4.6.0  /usr/local/lib/libopencv_face.so.4.6.0  /usr/local/lib/libopencv_freetype.so.4.6.0  /usr/local/lib/libopencv_fuzzy.so.4.6.0  /usr/local/lib/libopencv_hfs.so.4.6.0  /usr/local/lib/libopencv_img_hash.so.4.6.0  /usr/local/lib/libopencv_intensity_transform.so.4.6.0  /usr/local/lib/libopencv_line_descriptor.so.4.6.0  /usr/local/lib/libopencv_mcc.so.4.6.0  /usr/local/lib/libopencv_quality.so.4.6.0  /usr/local/lib/libopencv_rapid.so.4.6.0  /usr/local/lib/libopencv_reg.so.4.6.0  /usr/local/lib/libopencv_rgbd.so.4.6.0  /usr/local/lib/libopencv_saliency.so.4.6.0  /usr/local/lib/libopencv_stereo.so.4.6.0  /usr/local/lib/libopencv_structured_light.so.4.6.0  /usr/local/lib/libopencv_phase_unwrapping.so.4.6.0  /usr/local/lib/libopencv_superres.so.4.6.0  /usr/local/lib/libopencv_optflow.so.4.6.0  /usr/local/lib/libopencv_surface_matching.so.4.6.0  /usr/local/lib/libopencv_tracking.so.4.6.0  /usr/local/lib/libopencv_highgui.so.4.6.0  /usr/local/lib/libopencv_datasets.so.4.6.0  /usr/local/lib/libopencv_plot.so.4.6.0  /usr/local/lib/libopencv_text.so.4.6.0  /usr/local/lib/libopencv_videostab.so.4.6.0  /usr/local/lib/libopencv_videoio.so.4.6.0  /usr/local/lib/libopencv_wechat_qrcode.so.4.6.0  /usr/local/lib/libopencv_xfeatures2d.so.4.6.0  /usr/local/lib/libopencv_ml.so.4.6.0  /usr/local/lib/libopencv_shape.so.4.6.0  /usr/local/lib/libopencv_ximgproc.so.4.6.0  /usr/local/lib/libopencv_video.so.4.6.0  /usr/local/lib/libopencv_xobjdetect.so.4.6.0  /usr/local/lib/libopencv_imgcodecs.so.4.6.0  /usr/local/lib/libopencv_objdetect.so.4.6.0  /usr/local/lib/libopencv_calib3d.so.4.6.0  /usr/local/lib/libopencv_dnn.so.4.6.0  /usr/local/lib/libopencv_features2d.so.4.6.0  /usr/local/lib/libopencv_flann.so.4.6.0  /usr/local/lib/libopencv_xphoto.so.4.6.0  /usr/local/lib/libopencv_photo.so.4.6.0  /usr/local/lib/libopencv_imgproc.so.4.6.0  /usr/local/lib/libopencv_core.so.4.6.0  /opt/intel/openvino2022/runtime/lib/intel64/libopenvino.so.2022.3.0
   OBJECT_DIR = CMakeFiles/Ares_CV.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -132,7 +98,215 @@ build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
 build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 # =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/quonone/workspace/Armor_project/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target serial
+
+
+#############################################
+# Order-only phony target for serial
+
+build cmake_object_order_depends_target_serial: phony || serial/CMakeFiles/serial.dir
+
+build serial/CMakeFiles/serial.dir/serial.cpp.o: CXX_COMPILER__serial_Debug /home/quonone/workspace/Armor_project/serial/serial.cpp || cmake_object_order_depends_target_serial
+  DEP_FILE = serial/CMakeFiles/serial.dir/serial.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
+  INCLUDES = -I/usr/local/include/opencv4 -I/home/quonone/workspace/Armor_project/include
+  OBJECT_DIR = serial/CMakeFiles/serial.dir
+  OBJECT_FILE_DIR = serial/CMakeFiles/serial.dir
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target serial
+
+
+#############################################
+# Link the static library serial/libserial.a
+
+build serial/libserial.a: CXX_STATIC_LIBRARY_LINKER__serial_Debug serial/CMakeFiles/serial.dir/serial.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = serial/CMakeFiles/serial.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = serial/libserial.a
+  TARGET_PDB = serial.a.dbg
+
+
+#############################################
+# Utility command for edit_cache
+
+build serial/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/quonone/workspace/Armor_project/build/serial && /snap/clion/222/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build serial/edit_cache: phony serial/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build serial/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/quonone/workspace/Armor_project/build/serial && /snap/clion/222/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/home/quonone/workspace/Armor_project -B/home/quonone/workspace/Armor_project/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build serial/rebuild_cache: phony serial/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/quonone/workspace/Armor_project/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target camera
+
+
+#############################################
+# Order-only phony target for camera
+
+build cmake_object_order_depends_target_camera: phony || camera/CMakeFiles/camera.dir
+
+build camera/CMakeFiles/camera.dir/src/camera_api.cpp.o: CXX_COMPILER__camera_Debug /home/quonone/workspace/Armor_project/camera/src/camera_api.cpp || cmake_object_order_depends_target_camera
+  DEP_FILE = camera/CMakeFiles/camera.dir/src/camera_api.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
+  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
+  OBJECT_DIR = camera/CMakeFiles/camera.dir
+  OBJECT_FILE_DIR = camera/CMakeFiles/camera.dir/src
+
+build camera/CMakeFiles/camera.dir/src/camera.cpp.o: CXX_COMPILER__camera_Debug /home/quonone/workspace/Armor_project/camera/src/camera.cpp || cmake_object_order_depends_target_camera
+  DEP_FILE = camera/CMakeFiles/camera.dir/src/camera.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
+  INCLUDES = -I/home/quonone/workspace/Armor_project/include -isystem /usr/local/include/opencv4
+  OBJECT_DIR = camera/CMakeFiles/camera.dir
+  OBJECT_FILE_DIR = camera/CMakeFiles/camera.dir/src
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target camera
+
+
+#############################################
+# Link the static library camera/libcamera.a
+
+build camera/libcamera.a: CXX_STATIC_LIBRARY_LINKER__camera_Debug camera/CMakeFiles/camera.dir/src/camera_api.cpp.o camera/CMakeFiles/camera.dir/src/camera.cpp.o || /usr/local/lib/libopencv_gapi.so.4.6.0 /usr/local/lib/libopencv_stitching.so.4.6.0 /usr/local/lib/libopencv_alphamat.so.4.6.0 /usr/local/lib/libopencv_aruco.so.4.6.0 /usr/local/lib/libopencv_barcode.so.4.6.0 /usr/local/lib/libopencv_bgsegm.so.4.6.0 /usr/local/lib/libopencv_bioinspired.so.4.6.0 /usr/local/lib/libopencv_ccalib.so.4.6.0 /usr/local/lib/libopencv_dnn_objdetect.so.4.6.0 /usr/local/lib/libopencv_dnn_superres.so.4.6.0 /usr/local/lib/libopencv_dpm.so.4.6.0 /usr/local/lib/libopencv_face.so.4.6.0 /usr/local/lib/libopencv_freetype.so.4.6.0 /usr/local/lib/libopencv_fuzzy.so.4.6.0 /usr/local/lib/libopencv_hfs.so.4.6.0 /usr/local/lib/libopencv_img_hash.so.4.6.0 /usr/local/lib/libopencv_intensity_transform.so.4.6.0 /usr/local/lib/libopencv_line_descriptor.so.4.6.0 /usr/local/lib/libopencv_mcc.so.4.6.0 /usr/local/lib/libopencv_quality.so.4.6.0 /usr/local/lib/libopencv_rapid.so.4.6.0 /usr/local/lib/libopencv_reg.so.4.6.0 /usr/local/lib/libopencv_rgbd.so.4.6.0 /usr/local/lib/libopencv_saliency.so.4.6.0 /usr/local/lib/libopencv_stereo.so.4.6.0 /usr/local/lib/libopencv_structured_light.so.4.6.0 /usr/local/lib/libopencv_superres.so.4.6.0 /usr/local/lib/libopencv_surface_matching.so.4.6.0 /usr/local/lib/libopencv_tracking.so.4.6.0 /usr/local/lib/libopencv_videostab.so.4.6.0 /usr/local/lib/libopencv_wechat_qrcode.so.4.6.0 /usr/local/lib/libopencv_xfeatures2d.so.4.6.0 /usr/local/lib/libopencv_xobjdetect.so.4.6.0 /usr/local/lib/libopencv_xphoto.so.4.6.0 /usr/local/lib/libopencv_shape.so.4.6.0 /usr/local/lib/libopencv_highgui.so.4.6.0 /usr/local/lib/libopencv_datasets.so.4.6.0 /usr/local/lib/libopencv_plot.so.4.6.0 /usr/local/lib/libopencv_text.so.4.6.0 /usr/local/lib/libopencv_ml.so.4.6.0 /usr/local/lib/libopencv_phase_unwrapping.so.4.6.0 /usr/local/lib/libopencv_optflow.so.4.6.0 /usr/local/lib/libopencv_ximgproc.so.4.6.0 /usr/local/lib/libopencv_video.so.4.6.0 /usr/local/lib/libopencv_videoio.so.4.6.0 /usr/local/lib/libopencv_imgcodecs.so.4.6.0 /usr/local/lib/libopencv_objdetect.so.4.6.0 /usr/local/lib/libopencv_calib3d.so.4.6.0 /usr/local/lib/libopencv_dnn.so.4.6.0 /usr/local/lib/libopencv_features2d.so.4.6.0 /usr/local/lib/libopencv_flann.so.4.6.0 /usr/local/lib/libopencv_photo.so.4.6.0 /usr/local/lib/libopencv_imgproc.so.4.6.0 /usr/local/lib/libopencv_core.so.4.6.0
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = camera/CMakeFiles/camera.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = camera/libcamera.a
+  TARGET_PDB = camera.a.dbg
+
+
+#############################################
+# Utility command for edit_cache
+
+build camera/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/quonone/workspace/Armor_project/build/camera && /snap/clion/222/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build camera/edit_cache: phony camera/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build camera/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/quonone/workspace/Armor_project/build/camera && /snap/clion/222/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/home/quonone/workspace/Armor_project -B/home/quonone/workspace/Armor_project/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build camera/rebuild_cache: phony camera/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/quonone/workspace/Armor_project/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target detector
+
+
+#############################################
+# Order-only phony target for detector
+
+build cmake_object_order_depends_target_detector: phony || detector/CMakeFiles/detector.dir
+
+build detector/CMakeFiles/detector.dir/src/armor_detect.cpp.o: CXX_COMPILER__detector_Debug /home/quonone/workspace/Armor_project/detector/src/armor_detect.cpp || cmake_object_order_depends_target_detector
+  DEFINES = -DIE_THREAD=IE_THREAD_TBB -DTBB_PREVIEW_WAITING_FOR_WORKERS=1
+  DEP_FILE = detector/CMakeFiles/detector.dir/src/armor_detect.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -Wno-error=deprecated-declarations -std=gnu++14
+  INCLUDES = -I/home/quonone/workspace/Armor_project/include -I/home/quonone/workspace/Armor_project/detector/include -isystem /usr/local/include/opencv4 -isystem /opt/intel/openvino2022/runtime/include -isystem /opt/intel/openvino2022/runtime/include/ie
+  OBJECT_DIR = detector/CMakeFiles/detector.dir
+  OBJECT_FILE_DIR = detector/CMakeFiles/detector.dir/src
+
+build detector/CMakeFiles/detector.dir/src/ovinference.cpp.o: CXX_COMPILER__detector_Debug /home/quonone/workspace/Armor_project/detector/src/ovinference.cpp || cmake_object_order_depends_target_detector
+  DEFINES = -DIE_THREAD=IE_THREAD_TBB -DTBB_PREVIEW_WAITING_FOR_WORKERS=1
+  DEP_FILE = detector/CMakeFiles/detector.dir/src/ovinference.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -Wno-error=deprecated-declarations -std=gnu++14
+  INCLUDES = -I/home/quonone/workspace/Armor_project/include -I/home/quonone/workspace/Armor_project/detector/include -isystem /usr/local/include/opencv4 -isystem /opt/intel/openvino2022/runtime/include -isystem /opt/intel/openvino2022/runtime/include/ie
+  OBJECT_DIR = detector/CMakeFiles/detector.dir
+  OBJECT_FILE_DIR = detector/CMakeFiles/detector.dir/src
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target detector
+
+
+#############################################
+# Link the static library detector/libdetector.a
+
+build detector/libdetector.a: CXX_STATIC_LIBRARY_LINKER__detector_Debug detector/CMakeFiles/detector.dir/src/armor_detect.cpp.o detector/CMakeFiles/detector.dir/src/ovinference.cpp.o || /usr/local/lib/libopencv_gapi.so.4.6.0 /usr/local/lib/libopencv_stitching.so.4.6.0 /usr/local/lib/libopencv_alphamat.so.4.6.0 /usr/local/lib/libopencv_aruco.so.4.6.0 /usr/local/lib/libopencv_barcode.so.4.6.0 /usr/local/lib/libopencv_bgsegm.so.4.6.0 /usr/local/lib/libopencv_bioinspired.so.4.6.0 /usr/local/lib/libopencv_ccalib.so.4.6.0 /usr/local/lib/libopencv_dnn_objdetect.so.4.6.0 /usr/local/lib/libopencv_dnn_superres.so.4.6.0 /usr/local/lib/libopencv_dpm.so.4.6.0 /usr/local/lib/libopencv_face.so.4.6.0 /usr/local/lib/libopencv_freetype.so.4.6.0 /usr/local/lib/libopencv_fuzzy.so.4.6.0 /usr/local/lib/libopencv_hfs.so.4.6.0 /usr/local/lib/libopencv_img_hash.so.4.6.0 /usr/local/lib/libopencv_intensity_transform.so.4.6.0 /usr/local/lib/libopencv_line_descriptor.so.4.6.0 /usr/local/lib/libopencv_mcc.so.4.6.0 /usr/local/lib/libopencv_quality.so.4.6.0 /usr/local/lib/libopencv_rapid.so.4.6.0 /usr/local/lib/libopencv_reg.so.4.6.0 /usr/local/lib/libopencv_rgbd.so.4.6.0 /usr/local/lib/libopencv_saliency.so.4.6.0 /usr/local/lib/libopencv_stereo.so.4.6.0 /usr/local/lib/libopencv_structured_light.so.4.6.0 /usr/local/lib/libopencv_superres.so.4.6.0 /usr/local/lib/libopencv_surface_matching.so.4.6.0 /usr/local/lib/libopencv_tracking.so.4.6.0 /usr/local/lib/libopencv_videostab.so.4.6.0 /usr/local/lib/libopencv_wechat_qrcode.so.4.6.0 /usr/local/lib/libopencv_xfeatures2d.so.4.6.0 /usr/local/lib/libopencv_xobjdetect.so.4.6.0 /usr/local/lib/libopencv_xphoto.so.4.6.0 /opt/intel/openvino2022/runtime/lib/intel64/libopenvino.so.2022.3.0 /usr/local/lib/libopencv_shape.so.4.6.0 /usr/local/lib/libopencv_highgui.so.4.6.0 /usr/local/lib/libopencv_datasets.so.4.6.0 /usr/local/lib/libopencv_plot.so.4.6.0 /usr/local/lib/libopencv_text.so.4.6.0 /usr/local/lib/libopencv_ml.so.4.6.0 /usr/local/lib/libopencv_phase_unwrapping.so.4.6.0 /usr/local/lib/libopencv_optflow.so.4.6.0 /usr/local/lib/libopencv_ximgproc.so.4.6.0 /usr/local/lib/libopencv_video.so.4.6.0 /usr/local/lib/libopencv_videoio.so.4.6.0 /usr/local/lib/libopencv_imgcodecs.so.4.6.0 /usr/local/lib/libopencv_objdetect.so.4.6.0 /usr/local/lib/libopencv_calib3d.so.4.6.0 /usr/local/lib/libopencv_dnn.so.4.6.0 /usr/local/lib/libopencv_features2d.so.4.6.0 /usr/local/lib/libopencv_flann.so.4.6.0 /usr/local/lib/libopencv_photo.so.4.6.0 /usr/local/lib/libopencv_imgproc.so.4.6.0 /usr/local/lib/libopencv_core.so.4.6.0
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = detector/CMakeFiles/detector.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = detector/libdetector.a
+  TARGET_PDB = detector.a.dbg
+
+
+#############################################
+# Utility command for edit_cache
+
+build detector/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/quonone/workspace/Armor_project/build/detector && /snap/clion/222/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build detector/edit_cache: phony detector/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build detector/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/quonone/workspace/Armor_project/build/detector && /snap/clion/222/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/home/quonone/workspace/Armor_project -B/home/quonone/workspace/Armor_project/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build detector/rebuild_cache: phony detector/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
 # Target aliases.
+
+build camera: phony camera/libcamera.a
+
+build detector: phony detector/libdetector.a
+
+build libcamera.a: phony camera/libcamera.a
+
+build libdetector.a: phony detector/libdetector.a
+
+build libserial.a: phony serial/libserial.a
+
+build serial: phony serial/libserial.a
 
 # =============================================================================
 # Folder targets.
@@ -142,7 +316,28 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /home/quonone/workspace/Armor_project/build
 
-build all: phony Ares_CV
+build all: phony Ares_CV serial/all camera/all detector/all
+
+# =============================================================================
+
+#############################################
+# Folder: /home/quonone/workspace/Armor_project/build/camera
+
+build camera/all: phony camera/libcamera.a
+
+# =============================================================================
+
+#############################################
+# Folder: /home/quonone/workspace/Armor_project/build/detector
+
+build detector/all: phony detector/libdetector.a
+
+# =============================================================================
+
+#############################################
+# Folder: /home/quonone/workspace/Armor_project/build/serial
+
+build serial/all: phony serial/libserial.a
 
 # =============================================================================
 # Built-in targets
@@ -151,14 +346,14 @@ build all: phony Ares_CV
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/quonone/workspace/Armor_project/CMakeLists.txt /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig.cmake /usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake /usr/local/lib/cmake/opencv4/OpenCVModules.cmake CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /home/quonone/workspace/Armor_project/CMakeLists.txt /home/quonone/workspace/Armor_project/camera/CMakeLists.txt /home/quonone/workspace/Armor_project/detector/CMakeLists.txt /home/quonone/workspace/Armor_project/serial/CMakeLists.txt /opt/intel/openvino2022/runtime/cmake/InferenceEngineConfig-version.cmake /opt/intel/openvino2022/runtime/cmake/InferenceEngineConfig.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOConfig-version.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOConfig.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOTargets-release.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOTargets.cmake /opt/intel/openvino2022/runtime/cmake/ngraphConfig.cmake /opt/intel/openvino2022/runtime/cmake/ngraphConfigVersion.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeFindDependencyMacro.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckCSourceCompiles.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFile.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckLibraryExists.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindThreads.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Internal/CheckSourceCompiles.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig.cmake /usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake /usr/local/lib/cmake/opencv4/OpenCVModules.cmake CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/quonone/workspace/Armor_project/CMakeLists.txt /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig.cmake /usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake /usr/local/lib/cmake/opencv4/OpenCVModules.cmake CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake: phony
+build /home/quonone/workspace/Armor_project/CMakeLists.txt /home/quonone/workspace/Armor_project/camera/CMakeLists.txt /home/quonone/workspace/Armor_project/detector/CMakeLists.txt /home/quonone/workspace/Armor_project/serial/CMakeLists.txt /opt/intel/openvino2022/runtime/cmake/InferenceEngineConfig-version.cmake /opt/intel/openvino2022/runtime/cmake/InferenceEngineConfig.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOConfig-version.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOConfig.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOTargets-release.cmake /opt/intel/openvino2022/runtime/cmake/OpenVINOTargets.cmake /opt/intel/openvino2022/runtime/cmake/ngraphConfig.cmake /opt/intel/openvino2022/runtime/cmake/ngraphConfigVersion.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCXXInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeFindDependencyMacro.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeGenericSystem.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckCSourceCompiles.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFile.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckLibraryExists.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindThreads.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Internal/CheckSourceCompiles.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-C.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux.cmake /snap/clion/222/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/UnixPaths.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake /usr/local/lib/cmake/opencv4/OpenCVConfig.cmake /usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake /usr/local/lib/cmake/opencv4/OpenCVModules.cmake CMakeCache.txt CMakeFiles/3.24.2/CMakeCCompiler.cmake CMakeFiles/3.24.2/CMakeCXXCompiler.cmake CMakeFiles/3.24.2/CMakeSystem.cmake: phony
 
 
 #############################################

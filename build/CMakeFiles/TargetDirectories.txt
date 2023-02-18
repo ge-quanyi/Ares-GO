@@ -1,3 +1,12 @@
 /home/quonone/workspace/Armor_project/build/CMakeFiles/Ares_CV.dir
 /home/quonone/workspace/Armor_project/build/CMakeFiles/edit_cache.dir
 /home/quonone/workspace/Armor_project/build/CMakeFiles/rebuild_cache.dir
+/home/quonone/workspace/Armor_project/build/serial/CMakeFiles/serial.dir
+/home/quonone/workspace/Armor_project/build/serial/CMakeFiles/edit_cache.dir
+/home/quonone/workspace/Armor_project/build/serial/CMakeFiles/rebuild_cache.dir
+/home/quonone/workspace/Armor_project/build/camera/CMakeFiles/camera.dir
+/home/quonone/workspace/Armor_project/build/camera/CMakeFiles/edit_cache.dir
+/home/quonone/workspace/Armor_project/build/camera/CMakeFiles/rebuild_cache.dir
+/home/quonone/workspace/Armor_project/build/detector/CMakeFiles/detector.dir
+/home/quonone/workspace/Armor_project/build/detector/CMakeFiles/edit_cache.dir
+/home/quonone/workspace/Armor_project/build/detector/CMakeFiles/rebuild_cache.dir

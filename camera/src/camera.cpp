@@ -40,6 +40,7 @@ Camera::~Camera() {
 
 void Camera::camera_stream_thread() {
     while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         GX_STATUS status = GXDQBuf(cam0->hDevice_, &pFrameBuffer, 1000);
         if (status == GX_STATUS_SUCCESS) {
             if (pFrameBuffer->nStatus == GX_FRAME_STATUS_SUCCESS) {
@@ -58,7 +59,7 @@ void Camera::camera_stream_thread() {
                     {
                         std::lock_guard<std::mutex> lg(cam_lock);
                         raw_image_pub.push_back(std::make_pair(time_stamp, raw_image));
-                        if (raw_image_pub.size() > 20) { raw_image_pub.pop_front(); }
+                        if (raw_image_pub.size() > 5) { raw_image_pub.pop_front(); }
                     }
 //                    fmt::print("buff size is {}\n", raw_image_pub.size());
 

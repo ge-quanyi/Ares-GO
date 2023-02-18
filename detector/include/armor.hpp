@@ -24,13 +24,11 @@ public:
     Armor()=default;
 
 private:
-
     double time_stamp;
     cv::Point3f cam_point_;
     cv::Point3f world_point_;
     int8_t id;
     ArmorType armor_size;
-
 };
 
 #endif

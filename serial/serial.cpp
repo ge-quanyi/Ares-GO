@@ -382,7 +382,7 @@ int SerialPort::ReceiveBuff()
 
                 //std::cout<<"bit8 "<<hex<<uint8_t(dst_buff[8])<<" "<<"bit9"<<hex<<uint8_t(dst_buff[9])<<std::endl;
 
-                robotInfo_ = {'a', pitch_ptz, yaw_ptz, speed_d};
+                robotInfo_ = {'a', pitch_ptz, yaw_ptz, double(speed_d/100)};
 //                cout<<"port buff: "
 //                    <<" pitch_ptz: "<<pitch_ptz
 //                    <<", yaw_ptz: "<<yaw_ptz

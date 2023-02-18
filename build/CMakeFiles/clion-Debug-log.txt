@@ -1,4 +1,6 @@
 /snap/clion/222/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/222/bin/ninja/linux/x64/ninja -G Ninja -S /home/quonone/workspace/Armor_project -B /home/quonone/workspace/Armor_project/build
+-- Found OpenCV: /usr/local (found suitable version "4.6.0", minimum required is "4") 
+-- Found OpenCV: /usr/local (found version "4.6.0") 
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/quonone/workspace/Armor_project/build

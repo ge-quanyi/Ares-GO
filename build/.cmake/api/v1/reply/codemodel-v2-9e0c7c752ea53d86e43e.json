@@ -1,0 +1,174 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "serial",
+					"jsonFile" : "directory-serial-Debug-fd3962aef6f65ded4b6e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "serial",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "camera",
+					"jsonFile" : "directory-camera-Debug-89fe7af5d3b36d844d56.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "camera",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "detector",
+					"jsonFile" : "directory-detector-Debug-88eeb80a44b71327c89c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "detector",
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Ares_CV",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "serial",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "camera",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3
+					],
+					"name" : "detector",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Ares_CV::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Ares_CV-Debug-747e164d25482ed2b83d.json",
+					"name" : "Ares_CV",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "camera::@f1ff328599b7b689f34c",
+					"jsonFile" : "target-camera-Debug-62628ad6ad502736e2a5.json",
+					"name" : "camera",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "detector::@24642e1cf358ed0449dc",
+					"jsonFile" : "target-detector-Debug-35a697721e9b9b191b66.json",
+					"name" : "detector",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "serial::@f50a2cc8b0e9321cdd57",
+					"jsonFile" : "target-serial-Debug-3d4e94a65948ce0c743b.json",
+					"name" : "serial",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/quonone/workspace/Armor_project/build",
+		"source" : "/home/quonone/workspace/Armor_project"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}
