@@ -1,0 +1,29 @@
+%YAML:1.0
+image_width: 960
+image_height: 768
+camera_name: daheng159
+camera_matrix: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1315.69025,    0.     ,  462.02312,
+            0.     , 1303.79362,  340.98833,
+            0.     ,    0.     ,    1.     ]
+distortion_model: plumb_bob
+distortion_coefficients: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [-0.060553, -0.368070, 0.001351, -0.011935, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1., 0., 0.,
+         0., 1., 0.,
+         0., 0., 1.]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [1291.82874,    0.     ,  453.89058,    0.     ,
+            0.     , 1292.43445,  340.01916,    0.     ,
+            0.     ,    0.     ,    1.     ,    0.     ]

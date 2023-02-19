@@ -10,13 +10,8 @@
 #define HEAD_LEN 4
 #define DATA_LEN 16
 #include <mutex>
+#include "../include/data_type.h"
 
-struct RobotInfo{
-    char color;
-    double ptz_pitch;
-    double ptz_yaw;
-    double bullet_speed;
-};
 class SerialPort
 {
 public:

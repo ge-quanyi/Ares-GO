@@ -24,7 +24,8 @@ private:
     std::shared_ptr<PNPSolver> pnpsolver;
     std::unique_ptr<Tictok> tic;
     std::shared_ptr<OvInference> ovinfer;
-    uint8_t locked_id = -1;
+    int8_t locked_id = -1;
     int lock_clock = 0;
+
 };
 #endif //ARES_CV_ARMOR_DETECT_H

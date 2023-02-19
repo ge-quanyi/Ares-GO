@@ -4,9 +4,7 @@
 - OpenCV
 - fmt
 - Daheng libs
-- pybind11
-- flask
-- craw
+- eigen3
 ### Set 
 Giving rights to serial
 ```shell
@@ -21,5 +19,10 @@ sudo  vim  /etc/udev/rules.d/10-local.rules
 add the contents to this file
 ```vim
 KERNEL==
+```
+
+install eigen3
+```shell
+sudo apt install libeigen3-dev
 ```
 
