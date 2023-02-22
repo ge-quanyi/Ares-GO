@@ -10,9 +10,11 @@
 #include "Tictoc.hpp"
 #include "../camera/include/camera.h"
 #include "../include/ovinference.h"
+#include "../include/anglesolver.hpp"
+#include "../serial/serial.h"
 
 extern std::shared_ptr<Camera> camera;
-
+extern std::shared_ptr<SerialPort> serial;
 class ArmorDetect{
 public:
     explicit ArmorDetect();
@@ -24,8 +26,13 @@ private:
     std::shared_ptr<PNPSolver> pnpsolver;
     std::unique_ptr<Tictok> tic;
     std::shared_ptr<OvInference> ovinfer;
+    std::shared_ptr<AngleSolver> anglesolver;
     int8_t locked_id = -1;
-    int lock_clock = 0;
+    int lose_cnt = 0;
+    int lock_cnt = 0;
 
+    void color_check(const char color, std::vector<OvInference::Detection>& results);
+    void armor_sort(OvInference::Detection& final_obj, std::vector<OvInference::Detection>& results, cv::Mat& src);
+    void draw_target(const OvInference::Detection& obj, cv::Mat& src);
 };
 #endif //ARES_CV_ARMOR_DETECT_H

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Eigen/Eigen>
+#include <eigen3/Eigen/Eigen>
 #include "../include/data_type.h"
 using namespace Eigen;
 
@@ -22,9 +22,9 @@ public:
                 0,0,1,  0.0809,  //0.1415              //z
                 0,0,0,  1;
     }
-    ~AngleSolver();
+    ~AngleSolver()=default;
 
-    cv::Point3f cam2abs(cv::Point3f camPoint, RobotInfo robot) {
+    cv::Point3f cam2abs(const cv::Point3f& camPoint, const RobotInfo& robot) {
         getRotX(-robot.ptz_pitch);
         getRotY(-robot.ptz_pitch);
         getRotZ(0);
@@ -33,7 +33,7 @@ public:
         return cv::Point3f (result(0,0),result(1,0),result(2,0));
     }
 
-    cv::Point3f abs2cam(cv::Point3f absPoint, RobotInfo robot) {
+    cv::Point3f abs2cam(const cv::Point3f& absPoint, const RobotInfo& robot) {
         getRotX(-robot.ptz_pitch);
         getRotY(-robot.ptz_yaw);
         getRotZ(0);
@@ -44,7 +44,7 @@ public:
 
     }
 
-    void getAngle(cv::Point3f cam_, double &pitch, double &yaw, double &Dis, RobotInfo stm) {
+    void getAngle(const cv::Point3f& cam_, double &pitch, double &yaw, double &Dis, RobotInfo stm) {
         cv::Point3f gun_ = cam2gun(cam_, cam2gunDiff);
         pitch = atan(gun_.y / sqrt(gun_.x * gun_.x + gun_.z * gun_.z));//more big more down
         yaw = atan(gun_.x / gun_.z); //more big more right
@@ -72,7 +72,7 @@ public:
         yaw += yaw_diff;//-0.023
     }
 
-    void getAngle_nofix(cv::Point3f cam_, double &pitch, double &yaw, double &Dis) {
+    void getAngle_nofix(const cv::Point3f& cam_, double &pitch, double &yaw, double &Dis) {
         cv::Point3f gun_ = cam2gun(cam_, cam2gunDiff);
         pitch = atan(gun_.y / sqrt(gun_.x * gun_.x + gun_.z * gun_.z));//more big more down
         yaw = atan(gun_.x / gun_.z); //more big more right

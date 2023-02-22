@@ -11,6 +11,9 @@ struct RobotInfo{
     double bullet_speed;
 };
 
+struct SendInfo{
+
+};
 enum ArmorType{
     SMALL = 0,
     BIG

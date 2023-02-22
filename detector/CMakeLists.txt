@@ -19,7 +19,7 @@ add_library(${PROJECT_NAME} STATIC
                             include/anglesolver.hpp)
 
 include_directories(include)
-include_directories(${EIGEN3_INCLUDE_DIR})
+include_directories(${Eigen3_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         openvino::runtime

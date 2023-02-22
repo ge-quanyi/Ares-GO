@@ -9,6 +9,7 @@
 std::shared_ptr<SerialPort> serial;
 std::shared_ptr<Camera> camera;
 std::mutex main_sub;
+
 int main() {
 //    serial = std::make_shared<SerialPort>("/dev/stm", 115200);
 //    camera = std::make_shared<Camera>("KE0200120159", 960, 768);
@@ -16,7 +17,6 @@ int main() {
 //    std::thread serial_thread(&SerialPort::receive_thread, serial);
 //    std::thread camera_thread(&Camera::camera_stream_thread, camera);
     std::thread autoaim_thread(&ArmorDetect::run, autoaim);
-
 
     while(true){
         if(!autoaim->image_to_display_.size()){
