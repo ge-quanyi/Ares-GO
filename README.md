@@ -5,6 +5,7 @@
 - fmt
 - Daheng libs
 - eigen3
+- matplot-cpp
 ### Set 
 Giving rights to serial
 ```shell

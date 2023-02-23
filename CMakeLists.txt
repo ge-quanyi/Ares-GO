@@ -11,6 +11,7 @@ include_directories(include)
 add_subdirectory(serial)
 add_subdirectory(camera)
 add_subdirectory(detector)
+add_subdirectory(predictor)
 
 add_executable(Ares_CV main.cpp)
 target_link_libraries(Ares_CV camera serial detector)
