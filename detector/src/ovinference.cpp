@@ -19,7 +19,7 @@ OvInference::OvInference(const std::string &model_path) :
     ppp.output().tensor().set_element_type(ov::element::f32);
     // Embed above steps in the graph
     model = ppp.build();
-    compiled_model = core.compile_model(model, "CPU");
+    compiled_model = core.compile_model(model, "GPU");
 }
 
 OvInference::Resize OvInference::resize_and_pad(cv::Mat &img, cv::Size new_shape){

@@ -11,11 +11,11 @@ std::shared_ptr<Camera> camera;
 std::mutex main_sub;
 
 int main() {
-//    serial = std::make_shared<SerialPort>("/dev/stm", 115200);
-//    camera = std::make_shared<Camera>("KE0200120159", 960, 768);
+    serial = std::make_shared<SerialPort>("/dev/stm", 115200);
+    camera = std::make_shared<Camera>("KE0200100061", 960, 768);
     std::shared_ptr<ArmorDetect> autoaim = std::make_shared<ArmorDetect>();
-//    std::thread serial_thread(&SerialPort::receive_thread, serial);
-//    std::thread camera_thread(&Camera::camera_stream_thread, camera);
+    std::thread serial_thread(&SerialPort::receive_thread, serial);
+    std::thread camera_thread(&Camera::camera_stream_thread, camera);
     std::thread autoaim_thread(&ArmorDetect::run, autoaim);
 
     while(true){
@@ -37,7 +37,8 @@ int main() {
         cv::waitKey(1);
     }
 
-//    camera_thread.join();
+    camera_thread.join();
     autoaim_thread.join();
+    serial_thread.join();
 
 }

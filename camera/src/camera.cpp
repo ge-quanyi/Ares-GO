@@ -59,7 +59,7 @@ void Camera::camera_stream_thread() {
                     {
                         std::lock_guard<std::mutex> lg(cam_lock);
                         raw_image_pub.push_back(std::make_pair(time_stamp, raw_image));
-                        if (raw_image_pub.size() > 5) { raw_image_pub.pop_front(); }
+                        if (raw_image_pub.size() > 2) { raw_image_pub.pop_front(); }
                     }
 //                    fmt::print("buff size is {}\n", raw_image_pub.size());
 

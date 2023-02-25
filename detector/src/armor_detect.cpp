@@ -95,31 +95,28 @@ void ArmorDetect::draw_target(const OvInference::Detection &obj, cv::Mat &src) {
 
 
 void ArmorDetect::run() {
-    cv::VideoCapture video("/home/quonone/Videos/video.mp4");
+//    cv::VideoCapture video("/home/ares/Videos/video.mp4");
 
     while(true){
 
-//        if(!camera->raw_image_pub.size()){
-//            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-//            continue;
-//        }
+        if(!camera->raw_image_pub.size()){
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            continue;
+        }
         cv::Mat src;
-        video.read(src);
-        if(src.empty())
-            break;
-//        double time_stamp;
-//        {
-//            std::lock_guard<std::mutex> lg2(sub_lock);
-//            src = camera->raw_image_pub.front().second.clone();
-//            time_stamp = camera->raw_image_pub.front().first;
-//            camera->raw_image_pub.pop_front();
-//        }
+        double time_stamp;
+        {
+            std::lock_guard<std::mutex> lg2(sub_lock);
+            src = camera->raw_image_pub.front().second.clone();
+            time_stamp = camera->raw_image_pub.front().first;
+            camera->raw_image_pub.pop_front();
+        }
         if(src.empty())
             continue;
         ///TODO: armor detect and predict, then serial send
         std::vector<OvInference::Detection> results;
         ovinfer->infer(src, results);
-        RobotInfo robot_ = {'a',0, 0,0};
+        RobotInfo robot_ = serial->robotInfo_;
         color_check(robot_.color, results);
 
         OvInference::Detection final_obj;
@@ -131,11 +128,23 @@ void ArmorDetect::run() {
         draw_target(final_obj,src);
 
         auto cam_ = pnpsolver->get_cam_point(final_obj);
+        double pitch, yaw, dis;
+        anglesolver->getAngle(cam_,pitch,yaw,dis, robot_);
         auto w_point = anglesolver->cam2abs(cam_,robot_);
         ///TODO: predict
 
         auto pred_cam_ = anglesolver->abs2cam(w_point, robot_);
 
+        char* send_data = new char[6];
+        char cmd = 0x31;
+        send_data[0] = int16_t (1000*pitch);
+        send_data[1] = int16_t (1000*pitch) >> 8;
+        send_data[2] = int16_t (1000*yaw);
+        send_data[3] = int16_t (1000*yaw) >> 8;
+        send_data[4] = int16_t (1000*dis);
+        send_data[5] = int16_t (1000*dis) >> 8;
+        serial->SendBuff(cmd, send_data, 6);
+        delete[] send_data;
 
 //        std::cout<<"cam_ "<<cam_<<std::endl;
 
@@ -143,7 +152,7 @@ void ArmorDetect::run() {
         {
             std::lock_guard<std::mutex> lg3(pub_lock);
             image_to_display_.push_back(src);
-            if(image_to_display_.size()>5)
+            if(image_to_display_.size()>2)
                 image_to_display_.pop_front();
         }
 
