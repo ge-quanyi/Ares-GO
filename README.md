@@ -19,7 +19,7 @@ sudo  vim  /etc/udev/rules.d/10-local.rules
 ```
 add the contents to this file
 ```vim
-KERNEL==
+KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666", GROUP:="dialout", SYMLINK+="stm"
 ```
 
 install eigen3

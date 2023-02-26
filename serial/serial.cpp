@@ -354,10 +354,10 @@ int SerialPort::ReceiveBuff()
     size_t read_length = Read(buff_l_, COM_BUFF_LEN);
     // std::clog<<"llllllllllength "<<read_length<<std::endl;
     if (read_length == 0){return -1;}
-    //cout << src_buff[0] <<endl;
+//    cout << buff_l_[0] <<endl;
     if (buff_l_[0] == 0x55)
     {
-        //cout<<"[info ] receive check head success "<<endl;
+//        cout<<"[info ] receive check head success "<<endl;
         if(ISO14443ACheckLen((unsigned char *)(buff_l_))){
             //cout<<"[info ] receive check len success "<<endl;
             if (ISO14443ACheckCRCA(buff_l_, (unsigned short)(buff_l_[2] + HEAD_LEN))){
@@ -368,27 +368,29 @@ int SerialPort::ReceiveBuff()
                 }
                 int16_t buff[4];
 
-                buff[0] = ((uint16_t)buff_r_[4]<<8)|uint8_t (buff_r_[5]);
-                buff[1] = ((uint16_t)buff_r_[6]<<8)|uint8_t (buff_r_[7]);
+                buff[0] = ((uint16_t)buff_r_[5]<<8)|uint8_t (buff_r_[6]);  //pitch
+                buff[1] = ((uint16_t)buff_r_[7]<<8)|uint8_t (buff_r_[8]);  //yaw
 
                 double pitch_ptz = double(buff[0]) /1000;
                 double yaw_ptz = double (buff[1]) /1000;
 
-                buff[2] =  ((uint16_t)buff_r_[8]<<8)| uint8_t (buff_r_[9]);
-                buff[3] = ((uint16_t)buff_r_[10]<<8)| uint8_t (buff_r_[11]);
-                double pitch_w = double(buff[2]) / 1000 ; //角速度
-                double yaw_w = double(buff[3]) / 1000 ;
-                uint16_t speed_d =  uint16_t (buff_r_[12])<<8 | uint8_t (buff_r_[13]);
+                buff[2] =  ((uint16_t)buff_r_[9]<<8)| uint8_t (buff_r_[10]); //dis
+
+
+                buff[3] = ((uint16_t)buff_r_[11]<<8)| uint8_t (buff_r_[12]);
+                double speed_d = double(buff[2]); //角速度
+//                double yaw_w = double(buff[3]) / 1000 ;
+//                uint16_t speed_d =  uint16_t (buff_r_[12])<<8 | uint8_t (buff_r_[13]);
 
                 //std::cout<<"bit8 "<<hex<<uint8_t(dst_buff[8])<<" "<<"bit9"<<hex<<uint8_t(dst_buff[9])<<std::endl;
 
-                robotInfo_ = {buff_r_[4], pitch_ptz, yaw_ptz, double(speed_d/100)};
+                robotInfo_ = {buff_r_[4], pitch_ptz, yaw_ptz, double(speed_d)};
 //                cout<<"port buff: "
 //                    <<" pitch_ptz: "<<pitch_ptz
 //                    <<", yaw_ptz: "<<yaw_ptz
 //                    <<", speed_d: "<<speed_d
-//                    <<", pitch_w: "<<pitch_w  //抬头负，低头正
-//                    <<", yaw_w: "<<yaw_w
+////                    <<", pitch_w: "<<pitch_w  //抬头负，低头正
+////                    <<", yaw_w: "<<yaw_w
 //                    <<endl;  //顺时针负，逆时针正
                 return 1;
             }else{
@@ -424,9 +426,10 @@ void SerialPort::receive_thread() {
     std::cout<<"serial thread create success :"<<std::endl;
     while(!this->PortInit());
     int status = -2;
+
     while(1){
         status = this->ReceiveBuff();
-        //std::cout<<"ssssssssssss"<<status<<std::endl;
+//        std::cout<<"ssssssssssss"<<status<<std::endl;
         if(status == -1){
             while(!this->PortInit());
             fmt::print(fg(fmt::color::red),"[Error] Serial offline, try to restart..");

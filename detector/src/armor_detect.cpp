@@ -3,7 +3,8 @@
 //
 #include "../include/armor_detect.h"
 #include "../../include/data_type.h"
-
+#include <fmt/core.h>
+#include <fmt/color.h>
 #include <thread>
 #include <mutex>
 
@@ -120,7 +121,7 @@ void ArmorDetect::run() {
         color_check(robot_.color, results);
 
         OvInference::Detection final_obj;
-        final_obj.class_id = -1;
+        final_obj.class_id = -1;           //check if armor
         armor_sort(final_obj, results, src);
         cv::putText(src,"lock_ed id "+ std::to_string(locked_id),cv::Point (15,30),
         cv::FONT_HERSHEY_COMPLEX_SMALL,1,cv::Scalar(255,0,0));
@@ -128,15 +129,18 @@ void ArmorDetect::run() {
         draw_target(final_obj,src);
 
         auto cam_ = pnpsolver->get_cam_point(final_obj);
-        double pitch, yaw, dis;
-        anglesolver->getAngle(cam_,pitch,yaw,dis, robot_);
-        auto w_point = anglesolver->cam2abs(cam_,robot_);
+        double pitch, yaw, dis ;
+        pitch = yaw = dis = 0;
+        if(final_obj.class_id > -1){
+//            anglesolver->getAngle(cam_,pitch,yaw,dis, robot_);
+            anglesolver->getAngle_nofix(cam_,pitch,yaw,dis);
+            auto w_point = anglesolver->cam2abs(cam_,robot_);
+            auto pred_cam_ = anglesolver->abs2cam(w_point, robot_);
+        }
         ///TODO: predict
-
-        auto pred_cam_ = anglesolver->abs2cam(w_point, robot_);
-
         char* send_data = new char[6];
         char cmd = 0x31;
+        if(final_obj.class_id == -1) {cmd = 0x30;}
         send_data[0] = int16_t (1000*pitch);
         send_data[1] = int16_t (1000*pitch) >> 8;
         send_data[2] = int16_t (1000*yaw);
@@ -145,6 +149,7 @@ void ArmorDetect::run() {
         send_data[5] = int16_t (1000*dis) >> 8;
         serial->SendBuff(cmd, send_data, 6);
         delete[] send_data;
+        fmt::print(fg(fmt::color::green),"object data {},{},{}. \r\n",pitch,yaw,dis);
 
 //        std::cout<<"cam_ "<<cam_<<std::endl;
 

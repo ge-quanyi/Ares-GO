@@ -38,7 +38,7 @@ int main() {
     }
 
     camera_thread.join();
-    autoaim_thread.join();
+//    autoaim_thread.join();
     serial_thread.join();
 
 }

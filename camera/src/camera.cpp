@@ -40,7 +40,7 @@ Camera::~Camera() {
 
 void Camera::camera_stream_thread() {
     while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        std::this_thread::sleep_for(std::chrono::milliseconds(15));
         GX_STATUS status = GXDQBuf(cam0->hDevice_, &pFrameBuffer, 1000);
         if (status == GX_STATUS_SUCCESS) {
             if (pFrameBuffer->nStatus == GX_FRAME_STATUS_SUCCESS) {
@@ -52,7 +52,7 @@ void Camera::camera_stream_thread() {
                                                  pFrameBuffer->nHeight, cvtype, nBayerType, false);
                 if (DxStatus == DX_OK) {
                     //copy image data
-                    tic->fps_calculate();
+//                    tic->fps_calculate();
                     cv::Mat raw_image(pFrameBuffer->nHeight, pFrameBuffer->nWidth, CV_8UC3, origin_buff);
 //                    tmp_image.copyTo(raw_image);
 //                    memcpy(raw_image.data, origin_buff, pFrameBuffer->nWidth*pFrameBuffer->nHeight*3);
