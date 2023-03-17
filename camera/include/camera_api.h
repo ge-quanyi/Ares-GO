@@ -13,13 +13,13 @@ struct camera_config {
     std::string sn_str;
     char *SN;
     //设置ROI的宽度
-    int nWidth = 960;//960
+    int nWidth = 640;//960
     //设置ROI的高度
-    int nHeight = 768;//768
+    int nHeight = 480;//768
     //设置ROI的X方向偏移
-    int nOffsetX = 160;//160
+    int nOffsetX = 320;//160
     //设置ROI的Y方向偏移
-    int nOffsetY = 128;//128
+    int nOffsetY = 272;//128
     //是否开启触发模式
     int TriggerMode = 0;
     //设置触发源
@@ -29,7 +29,7 @@ struct camera_config {
     //设置是否自动曝光
     int ExposureAuto = 0;
     //设置固定曝光时间(单位:um)
-    double Exposure = 8000.0;//2000
+    double Exposure = 2000.0;//2000
     //设置自动曝光时间下限(单位:um)
     double MinExposure = 100.0;
     //设置自动曝光时间上限(单位:um)

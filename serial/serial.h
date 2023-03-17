@@ -27,17 +27,23 @@ public:
     bool SendBuff(char command, char *data, unsigned short length);//发送数据
     int ReceiveBuff();//接受数据
     void receive_thread();
-    RobotInfo robotInfo_;
+    void get_robot_data(RobotInfo& robot);
+
 private:
     int fd_;//串口文件
     const char* devices;
     const int baudrate;
+    std::mutex mtx_port;
+    RobotInfo robotInfo_;
     int OpenDev(const char *dev);
     bool SetSpeed(int fd, int speed);
     bool SetParity(int &fd, int data_bits, char parity, int stop_bits);
     void ISO14443AAppendCRCA(void* buffer, unsigned short byte_count);
     unsigned char ISO14443ACheckCRCA(void* buffer, unsigned short byte_count);
     bool ISO14443ACheckLen(unsigned  char* buffer);
+
+    void putdata(const RobotInfo& robot);
+
 };
 
 #endif //ARESCV_SERIAL_H

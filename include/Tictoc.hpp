@@ -22,7 +22,7 @@ public:
         auto time_ = this_time();
         if (time_ - fps_count >= 1000) {
 //            fmt::print("thread process  FPS : {}",std::this_thread::get_id());
-            std::cout<< std::this_thread::get_id()<<" "<< "process FPS : " <<fps<<std::endl;
+//            std::cout<< std::this_thread::get_id()<<" "<< "process FPS : " <<fps<<std::endl;
             fps = 0;
             fps_count = time_;
         }

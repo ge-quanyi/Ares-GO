@@ -15,8 +15,6 @@
 #include <fmt/color.h>
 
 using namespace std;
-
-std::mutex mtx_port;
 /*************************************************
 Function:       SerialPort
 Description:    构造函数
@@ -339,6 +337,15 @@ bool SerialPort::SendBuff(char command, char *data, unsigned short length)
     else
         return false;
 }
+
+void SerialPort::putdata(const RobotInfo& robot) {
+    std::lock_guard<std::mutex> lg_port(mtx_port);
+    robotInfo_ = robot;
+}
+void SerialPort::get_robot_data(RobotInfo &robot) {
+    std::lock_guard<std::mutex> lg_port(mtx_port);
+    robot = robotInfo_;
+}
 /*************************************************
 Function:       ReceiveBuff
 Description:    读取数据包
@@ -374,17 +381,18 @@ int SerialPort::ReceiveBuff()
                 double pitch_ptz = double(buff[0]) /1000;
                 double yaw_ptz = double (buff[1]) /1000;
 
-                buff[2] =  ((uint16_t)buff_r_[9]<<8)| uint8_t (buff_r_[10]); //dis
+                buff[2] =  ((uint16_t)buff_r_[9]<<8)| uint8_t (buff_r_[10]); //roll
 
+                buff[3] = ((uint16_t)buff_r_[11]<<8)| uint8_t (buff_r_[12]); //bulled_speed
 
-                buff[3] = ((uint16_t)buff_r_[11]<<8)| uint8_t (buff_r_[12]);
-                double speed_d = double(buff[2]); //角速度
-//                double yaw_w = double(buff[3]) / 1000 ;
+                double roll_ptz = double(buff[2])/1000; //角速度
+                double speed_d = double(buff[3]);
 //                uint16_t speed_d =  uint16_t (buff_r_[12])<<8 | uint8_t (buff_r_[13]);
 
                 //std::cout<<"bit8 "<<hex<<uint8_t(dst_buff[8])<<" "<<"bit9"<<hex<<uint8_t(dst_buff[9])<<std::endl;
-
-                robotInfo_ = {buff_r_[4], pitch_ptz, yaw_ptz, double(speed_d)};
+                RobotInfo robot = {buff_r_[4], pitch_ptz, \
+                yaw_ptz, roll_ptz,double(speed_d)};
+                putdata(robot);
 //                cout<<"port buff: "
 //                    <<" pitch_ptz: "<<pitch_ptz
 //                    <<", yaw_ptz: "<<yaw_ptz

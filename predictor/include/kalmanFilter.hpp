@@ -20,7 +20,10 @@ public:
     ~KalmanFilter()=default;
 
     Eigen::VectorXd X_hat_new; //最优估计
-
+    Eigen::MatrixXd P; //协方差矩阵    1
+    Eigen::MatrixXd H; //测量矩阵      1
+    Eigen::MatrixXd Q; //过程噪声     1
+    Eigen::MatrixXd R; //测量噪声     1
     //初始状态量，当前时刻
     void init(const Eigen::VectorXd& X0,double t){
         P = P0;
@@ -28,19 +31,21 @@ public:
         this->t0 = t;
         this->last_t = t0;
     }
-
-    //当前观测量，当前时刻
-    void update(const Eigen::VectorXd& Y, double t){
+    //先predict，在value，最后获得最优估计
+    void predict(const Eigen::VectorXd& Y, double t){
         double dt = t - last_t;
         A  << 1,0,0,dt,0,0,
-              0,1,0,0,dt,0,
-              0,0,1,0,0,dt,
-              0,0,0,1,0,0,
-              0,0,0,0,1,0,
-              0,0,0,0,0,1;
+                0,1,0,0,dt,0,
+                0,0,1,0,0,dt,
+                0,0,0,1,0,0,
+                0,0,0,0,1,0,
+                0,0,0,0,0,1;
         last_t = t;
         //predict
         X_hat_new = A*X_hat;
+
+    }
+    void update(const Eigen::VectorXd& Y){
         P = A*P*A.transpose() + Q;
         //update
         K = P*H.transpose()*(H*P*H.transpose()+R).inverse();
@@ -53,13 +58,12 @@ public:
 private:
     Eigen::MatrixXd A; //状态转移矩阵  1
     Eigen::MatrixXd B; //控制矩阵      1
-    Eigen::MatrixXd P; //协方差矩阵    1
+
     Eigen::MatrixXd P0; //协方差矩阵    1
     Eigen::MatrixXd K; //卡尔曼增益/
-    Eigen::MatrixXd H; //测量矩阵      1
+
     Eigen::MatrixXd I; //单位
-    Eigen::MatrixXd Q; //过程噪声     1
-    Eigen::MatrixXd R; //测量噪声     1
+
 
     Eigen::VectorXd X_hat; //先验估计，列向量
 

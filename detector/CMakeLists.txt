@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.16)
 project(detector)
 
 include_directories(
@@ -15,8 +15,7 @@ find_package(ngraph REQUIRED)
 find_package(Eigen3 REQUIRED)
 add_library(${PROJECT_NAME} STATIC
                             src/armor_detect.cpp
-                            src/ovinference.cpp
-                            include/anglesolver.hpp)
+                            src/ovinference.cpp)
 
 include_directories(include)
 include_directories(${Eigen3_INCLUDE_DIR})
