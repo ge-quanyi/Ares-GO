@@ -8,7 +8,9 @@
 #include <thread>
 #include <mutex>
 
-
+Publisher<cv::Mat> display_pub_(5);
+Subscriber<Camdata> cam_subscriber(&cam_publisher);
+Subscriber<RobotInfo> serial_sub_(&serial_publisher);
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
     pnpsolver = std::make_shared<PNPSolver>("../params/daheng159.yaml");
@@ -18,16 +20,15 @@ ArmorDetect::ArmorDetect() {
 }
 
 void ArmorDetect::color_check(const char color, std::vector<OvInference::Detection> &results) {
-    int IF_WE_RED = -1;
-    if (color == 'r')
-        IF_WE_RED = 1;
+
     for (auto i = results.begin(); i != results.end();) {
-        if (IF_WE_RED) {
+        if (color == 'r') {
             if (i->class_id < 9)
                 i = results.erase(i);
             else
                 ++i;
         } else {
+            std::cout<<"passsss red"<<std::endl;
             if (i->class_id > 9)
                 i = results.erase(i);
             else
@@ -94,51 +95,34 @@ void ArmorDetect::draw_target(const OvInference::Detection &obj, cv::Mat &src) {
     cv::line(src, obj.obj.p3, obj.obj.p4, cv::Scalar(0, 0, 255), 3);
 }
 
-void ArmorDetect::putdata(const cv::Mat &img) {
-    std::lock_guard<std::mutex> lg(pub_lock);
-    image_to_display_.push(img);
-    if (image_to_display_.size() > 5)
-        image_to_display_.pop();
-}
-
-bool ArmorDetect::getdata(cv::Mat &src) {
-    if (image_to_display_.empty())
-        return false;
-    src = image_to_display_.front().clone();
-    image_to_display_.pop();
-}
-
 void ArmorDetect::run() {
 //    cv::VideoCapture video("/home/ares/Videos/video.mp4");
 
     while (true) {
 
         try {
-            cv::Mat src; //注意
+            cv::Mat src;
             double time_stamp;
-            if (!camera->get_cam_data(time_stamp, src)) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                continue;
-            }
-//            std::cout << "src " << src << std::endl;
+            Camdata data = cam_subscriber.subscribe();
+
+            src = data.second.clone();
+            time_stamp = data.first;
             if(src.empty())
                 continue;
-            ///TODO: armor detect and predict, then serial send
             std::vector<OvInference::Detection> results;
             ovinfer->infer(src, results);
-            RobotInfo robot_ = {'r',0,0,0,15};
+            RobotInfo robot_  = serial_sub_.subscribe();
 //            serial->get_robot_data(robot_);
-
             fmt::print(fg(fmt::color::yellow), "robot data pitch {:.3f},yaw {:.3f}, roll {:.3f}, sp {:.3f}. \r\n",
                        robot_.ptz_pitch,robot_.ptz_yaw, robot_.ptz_roll, robot_.bullet_speed);
             color_check(robot_.color, results);
-
+//
             OvInference::Detection final_obj;
             final_obj.class_id = -1;           //check if armor
             armor_sort(final_obj, results, src);
             cv::putText(src, "lock_ed id " + std::to_string(locked_id), cv::Point(15, 30),
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
-
+//
             draw_target(final_obj, src);
 
             double pitch, yaw, dis;
@@ -153,7 +137,7 @@ void ArmorDetect::run() {
                 predictor->predict(armor, cam_pred, robot_);
                 as->getAngle_nofix(cam_pred, pitch, yaw, dis);
             }
-
+//
             if (final_obj.class_id > -1) {
                 pitch_last = pitch;
                 yaw_last = yaw;
@@ -173,24 +157,23 @@ void ArmorDetect::run() {
                 }
 
             }
-            char *send_data = new char[6];
-            char cmd = 0x31;
-            if (final_obj.class_id == -1) { cmd = 0x30; }
-            send_data[0] = int16_t(1000 * pitch);
-            send_data[1] = int16_t(1000 * pitch) >> 8;
-            send_data[2] = int16_t(1000 * yaw);
-            send_data[3] = int16_t(0000 * yaw) >> 8;
-            send_data[4] = int16_t(100 * dis);
-            send_data[5] = int16_t(100 * dis) >> 8;
-            bool status = serial->SendBuff(cmd, send_data, 6);
-            delete[] send_data;
+//            char *send_data = new char[6];
+//            char cmd = 0x31;
+//            if (final_obj.class_id == -1) { cmd = 0x30; }
+//            send_data[0] = int16_t(1000 * pitch);
+//            send_data[1] = int16_t(1000 * pitch) >> 8;
+//            send_data[2] = int16_t(1000 * yaw);
+//            send_data[3] = int16_t(0000 * yaw) >> 8;
+//            send_data[4] = int16_t(100 * dis);
+//            send_data[5] = int16_t(100 * dis) >> 8;
+//            bool status = serial->SendBuff(cmd, send_data, 6);
+//            delete[] send_data;
             std::cout<<"id "<<final_obj.class_id<<std::endl;
-//            fmt::print(fg(fmt::color::green), "object data {:.3f},{:.3f},{:.3f}. \r\n", pitch, yaw, dis);
 
-//        std::cout<<"cam_ "<<cam_<<std::endl;
-//        putdata(src);
-
+            display_pub_.publish(src);
             tic->fps_calculate();
+            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
+
         } catch (...) {
             std::cout << "[WARNING] camera not ready." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(200));

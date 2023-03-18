@@ -19,7 +19,7 @@ OvInference::OvInference(const std::string &model_path) :
     ppp.output().tensor().set_element_type(ov::element::f32);
     // Embed above steps in the graph
     model = ppp.build();
-    compiled_model = core.compile_model(model, "GPU");
+    compiled_model = core.compile_model(model, "CPU");
 }
 
 OvInference::Resize OvInference::resize_and_pad(cv::Mat &img, cv::Size new_shape){
@@ -70,7 +70,7 @@ void OvInference::infer(cv::Mat &img , std::vector<Detection>& final_result) {
     ov::Shape output_shape = output_tensor.get_shape();
     float *detections = output_tensor.data<float>();
 
-//    std::cout<< "tensor shape "<<output_shape<<std::endl;
+//    std::cout<< "tensor shape "<<output_shape<<std::endl; //[1,25200,49]
 
 
     std::vector<cv::Rect> boxes; //用于NMS
@@ -80,7 +80,7 @@ void OvInference::infer(cv::Mat &img , std::vector<Detection>& final_result) {
     //遍历每一个候选结果
     // x,y,w,h,conf, x1,y1,x2,y2,x3,y3,x4,y4, c1,c2,c3, ... , c36
     for (int i = 0; i < output_shape[1]; i++) {
-        float *detection = &detections[i * output_shape[2]];
+        float *detection = &detections[i * output_shape[2]]; //
         float confidence = detection[4];
         //选择置信度大于0.6的
         if (confidence >= CONFIDENCE_THRESHOLD) {

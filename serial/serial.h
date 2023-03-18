@@ -11,6 +11,7 @@
 #define DATA_LEN 16
 #include <mutex>
 #include "../include/data_type.h"
+#include "Message.hpp"
 
 class SerialPort
 {
@@ -33,8 +34,7 @@ private:
     int fd_;//串口文件
     const char* devices;
     const int baudrate;
-    std::mutex mtx_port;
-    RobotInfo robotInfo_;
+
     int OpenDev(const char *dev);
     bool SetSpeed(int fd, int speed);
     bool SetParity(int &fd, int data_bits, char parity, int stop_bits);
@@ -42,7 +42,6 @@ private:
     unsigned char ISO14443ACheckCRCA(void* buffer, unsigned short byte_count);
     bool ISO14443ACheckLen(unsigned  char* buffer);
 
-    void putdata(const RobotInfo& robot);
 
 };
 

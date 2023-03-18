@@ -14,6 +14,7 @@
 #include <fmt/core.h>
 #include <fmt/color.h>
 
+Publisher<RobotInfo> serial_publisher(1);
 using namespace std;
 /*************************************************
 Function:       SerialPort
@@ -338,14 +339,7 @@ bool SerialPort::SendBuff(char command, char *data, unsigned short length)
         return false;
 }
 
-void SerialPort::putdata(const RobotInfo& robot) {
-    std::lock_guard<std::mutex> lg_port(mtx_port);
-    robotInfo_ = robot;
-}
-void SerialPort::get_robot_data(RobotInfo &robot) {
-    std::lock_guard<std::mutex> lg_port(mtx_port);
-    robot = robotInfo_;
-}
+
 /*************************************************
 Function:       ReceiveBuff
 Description:    读取数据包
@@ -392,7 +386,7 @@ int SerialPort::ReceiveBuff()
                 //std::cout<<"bit8 "<<hex<<uint8_t(dst_buff[8])<<" "<<"bit9"<<hex<<uint8_t(dst_buff[9])<<std::endl;
                 RobotInfo robot = {buff_r_[4], pitch_ptz, \
                 yaw_ptz, roll_ptz,double(speed_d)};
-                putdata(robot);
+                serial_publisher.publish(robot);
 //                cout<<"port buff: "
 //                    <<" pitch_ptz: "<<pitch_ptz
 //                    <<", yaw_ptz: "<<yaw_ptz

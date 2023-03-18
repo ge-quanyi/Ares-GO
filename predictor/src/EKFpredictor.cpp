@@ -17,8 +17,9 @@ EKFPredictor::EKFPredictor() {
     fin["sentry_up"]["R00"] >> ekf.R(0, 0);
     fin["sentry_up"]["R11"] >> ekf.R(1, 1);
     fin["sentry_up"]["R22"] >> ekf.R(2, 2);
-
+    std::cout<<"QR matrix: "<<ekf.Q <<"\r\n "<<ekf.R<<std::endl;
     fin.release();
+    anglesolver = std::make_unique<AngleSolver>();
 }
 void EKFPredictor::reset() {
 
@@ -98,7 +99,7 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
 
     cam_pred = anglesolver->abs2cam(abs_pred,robot_);
     if(armor_seq.size()){
-        if(current_armor.time_stamp - armor_seq.back().time_stamp > 2){
+        if(current_armor.time_stamp - armor_seq.back().time_stamp > 2){ //s
             std::cout<<"reset!!"<<std::endl;
             inited = false;
         }

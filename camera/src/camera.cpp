@@ -9,7 +9,7 @@
 #include <string.h>
 #include "../include/camera.h"
 
-
+Publisher<Camdata> cam_publisher(5);
 
 Camera::Camera(const char *SN, const int width, const int height) :
         image_width(width), image_height(height), cameraSN_(SN) {
@@ -41,32 +41,12 @@ Camera::~Camera() {
     delete[]origin_buff;
 }
 
-
-void Camera::putdata(const Camdata& data) {
-    std::lock_guard<std::mutex> cam_lg(cam_lock);
-    if(raw_image_pub.size()>5){
-        raw_image_pub.pop();
-    }
-    raw_image_pub.push(data);
-
-}
-
-bool Camera::get_cam_data(double &time_point, cv::Mat &img) {
-    std::lock_guard<std::mutex> cam_lg(cam_lock);
-    if(!raw_image_pub.size())
-        return false;
-    img = raw_image_pub.front().second.clone();
-    time_point = raw_image_pub.front().first;
-    raw_image_pub.pop();
-    return true;
-}
-
 void Camera::camera_stream_thread() {
     while (true) {
         GX_STATUS status = GXDQBuf(cam0->hDevice_, &pFrameBuffer, 1000);
         if (status == GX_STATUS_SUCCESS) {
             if (pFrameBuffer->nStatus == GX_FRAME_STATUS_SUCCESS) {
-                double time_stamp = tic->this_time();
+                double time_stamp = tic->this_time();  //ms
                 memset(origin_buff,0,pFrameBuffer->nWidth* pFrameBuffer->nHeight* 3 * sizeof(char));
                 DX_BAYER_CONVERT_TYPE cvtype = RAW2RGB_NEIGHBOUR;           //选择插值算法
                 DX_PIXEL_COLOR_FILTER nBayerType = BAYERBG;              //选择图像Bayer格式
@@ -78,9 +58,9 @@ void Camera::camera_stream_thread() {
 //                    tic->fps_calculate();
                     cv::Mat raw_image(pFrameBuffer->nHeight, pFrameBuffer->nWidth, CV_8UC3);
                     memcpy(raw_image.data, origin_buff, pFrameBuffer->nWidth*pFrameBuffer->nHeight*3);
+                    time_stamp = time_stamp/1000;
                     Camdata cam_data = std::make_pair(time_stamp, raw_image);
-                    putdata(cam_data);
-//                    fmt::print("buff size is {}\n", raw_image_pub.size());
+                    cam_publisher.publish(cam_data);
                 }
             }
             status = GXQBuf(cam0->hDevice_, pFrameBuffer);
