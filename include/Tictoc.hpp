@@ -17,11 +17,13 @@ public:
         double time_stamp = std::chrono::duration<double, std::milli>(t1 - start_time).count();//ms
         return time_stamp;
     };
+
     int fps_calculate(){
+//        std::cout<<"fps calculate"<<std::endl;
         fps++;
         auto time_ = this_time();
         if (time_ - fps_count >= 1000) {
-//            fmt::print("thread process  FPS : {}",std::this_thread::get_id());
+            fmt::print("thread process  FPS : {}",fps);
 //            std::cout<< std::this_thread::get_id()<<" "<< "process FPS : " <<fps<<std::endl;
             fps = 0;
             fps_count = time_;

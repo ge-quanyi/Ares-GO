@@ -39,7 +39,7 @@ public:
         T data = m_publisher->m_data_queue.front();
         m_publisher->m_data_queue.pop();
         lock.unlock();
-        std::cout<<" Received data "<<std::endl;
+//        std::cout<<" Received data "<<std::endl;
         return data;
     }
 

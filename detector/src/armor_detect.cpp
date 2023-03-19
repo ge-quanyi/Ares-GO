@@ -11,6 +11,7 @@
 Publisher<cv::Mat> display_pub_(5);
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 Subscriber<RobotInfo> serial_sub_(&serial_publisher);
+extern std::shared_ptr<SerialPort> serial;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
     pnpsolver = std::make_shared<PNPSolver>("../params/daheng159.yaml");
@@ -112,9 +113,8 @@ void ArmorDetect::run() {
             std::vector<OvInference::Detection> results;
             ovinfer->infer(src, results);
             RobotInfo robot_  = serial_sub_.subscribe();
-//            serial->get_robot_data(robot_);
-            fmt::print(fg(fmt::color::yellow), "robot data pitch {:.3f},yaw {:.3f}, roll {:.3f}, sp {:.3f}. \r\n",
-                       robot_.ptz_pitch,robot_.ptz_yaw, robot_.ptz_roll, robot_.bullet_speed);
+//            fmt::print(fg(fmt::color::yellow), "robot data pitch {:.3f},yaw {:.3f}, roll {:.3f}, sp {:.3f}. \r\n",
+//                       robot_.ptz_pitch,robot_.ptz_yaw, robot_.ptz_roll, robot_.bullet_speed);
             color_check(robot_.color, results);
 //
             OvInference::Detection final_obj;
@@ -135,7 +135,7 @@ void ArmorDetect::run() {
                 armor.id = final_obj.class_id;
                 cv::Point3f cam_pred;
                 predictor->predict(armor, cam_pred, robot_);
-                as->getAngle_nofix(cam_pred, pitch, yaw, dis);
+                as->getAngle_nofix(cam_, pitch, yaw, dis);
             }
 //
             if (final_obj.class_id > -1) {
@@ -157,17 +157,17 @@ void ArmorDetect::run() {
                 }
 
             }
-//            char *send_data = new char[6];
-//            char cmd = 0x31;
-//            if (final_obj.class_id == -1) { cmd = 0x30; }
-//            send_data[0] = int16_t(1000 * pitch);
-//            send_data[1] = int16_t(1000 * pitch) >> 8;
-//            send_data[2] = int16_t(1000 * yaw);
-//            send_data[3] = int16_t(0000 * yaw) >> 8;
-//            send_data[4] = int16_t(100 * dis);
-//            send_data[5] = int16_t(100 * dis) >> 8;
-//            bool status = serial->SendBuff(cmd, send_data, 6);
-//            delete[] send_data;
+            char *send_data = new char[6];
+            char cmd = 0x31;
+            if (final_obj.class_id == -1) { cmd = 0x30; }
+            send_data[0] = int16_t(1000 * pitch);
+            send_data[1] = int16_t(1000 * pitch) >> 8;
+            send_data[2] = int16_t(1000 * yaw);
+            send_data[3] = int16_t(0000 * yaw) >> 8;
+            send_data[4] = int16_t(100 * dis);
+            send_data[5] = int16_t(100 * dis) >> 8;
+            bool status = serial->SendBuff(cmd, send_data, 6);
+            delete[] send_data;
             std::cout<<"id "<<final_obj.class_id<<std::endl;
 
             display_pub_.publish(src);

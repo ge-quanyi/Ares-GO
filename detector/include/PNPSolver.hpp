@@ -45,9 +45,9 @@ public:
 
         cv::Mat rvec, tvec;
         cv::solvePnP(cv::Mat(object_corners), cv::Mat(image_points), K_, D_, rvec, tvec, false);
-        double Z = tvec.at<double>(2, 0);
-        double X = tvec.at<double>(0, 0);
-        double Y = tvec.at<double>(1, 0);
+        double X = tvec.at<double>(2, 0);
+        double Y = -tvec.at<double>(0, 0);
+        double Z = -tvec.at<double>(1, 0);
         return cv::Point3f(X, Y, Z);
 
     }

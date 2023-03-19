@@ -10,6 +10,7 @@
 #include "Tictoc.hpp"
 #include "../include/ovinference.h"
 #include "../../predictor/include/EKFpredictor.h"
+#include "../../serial/serial.h"
 #include "anglesolver.hpp"
 #include "Message.hpp"
 
