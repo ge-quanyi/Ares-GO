@@ -18,8 +18,8 @@ public:
         fs["camera_matrix"]>>K_;
         fs["distortion_coefficients"]>>D_;
         fs.release();
-//        std::cout<<"m "<<K_<<std::endl;
-//        std::cout<<"d "<<D_<<std::endl;
+        std::cout<<"k "<<K_<<std::endl;
+        std::cout<<"d "<<D_<<std::endl;
     }
 
     inline cv::Point3f get_cam_point(const OvInference::Detection& obj){

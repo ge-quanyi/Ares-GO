@@ -30,8 +30,8 @@ int main() {
         src = display_sub_.subscribe();
         if(src.empty())
             continue;
-        cv::imshow("video", src);
-        cv::waitKey(1);
+//        cv::imshow("video", src);
+//        cv::waitKey(1);
     }
     autoaim_thread.join();
     camera_thread.join();

@@ -14,7 +14,7 @@ Subscriber<RobotInfo> serial_sub_(&serial_publisher);
 extern std::shared_ptr<SerialPort> serial;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
-    pnpsolver = std::make_shared<PNPSolver>("../params/daheng159.yaml");
+    pnpsolver = std::make_shared<PNPSolver>("../params/ost.yaml");
     ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     predictor = std::make_shared<EKFPredictor>();
     as = std::make_shared<AngleSolver>();
@@ -29,7 +29,7 @@ void ArmorDetect::color_check(const char color, std::vector<OvInference::Detecti
             else
                 ++i;
         } else {
-            std::cout<<"passsss red"<<std::endl;
+//            std::cout<<"passsss red"<<std::endl;
             if (i->class_id > 9)
                 i = results.erase(i);
             else
@@ -163,7 +163,7 @@ void ArmorDetect::run() {
             send_data[0] = int16_t(1000 * pitch);
             send_data[1] = int16_t(1000 * pitch) >> 8;
             send_data[2] = int16_t(1000 * yaw);
-            send_data[3] = int16_t(0000 * yaw) >> 8;
+            send_data[3] = int16_t(1000 * yaw) >> 8;
             send_data[4] = int16_t(100 * dis);
             send_data[5] = int16_t(100 * dis) >> 8;
             bool status = serial->SendBuff(cmd, send_data, 6);
