@@ -18,12 +18,13 @@ public:
         return time_stamp;
     };
 
-    void fps_calculate(){
+    void fps_calculate(int &final_fps){
 //        std::cout<<"fps calculate"<<std::endl;
         fps++;
         auto time_ = this_time();
         if (time_ - fps_count >= 1000) {
-            fmt::print("thread process  FPS : {}",fps);
+            final_fps = fps;
+//            fmt::print("thread process  FPS : {}",fps);
 //            std::cout<< std::this_thread::get_id()<<" "<< "process FPS : " <<fps<<std::endl;
             fps = 0;
             fps_count = time_;

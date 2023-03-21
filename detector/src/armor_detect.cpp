@@ -7,10 +7,11 @@
 #include <fmt/color.h>
 #include <thread>
 #include <mutex>
-#include "zmq.hpp"
+
 
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 Subscriber<RobotInfo> serial_sub_(&serial_publisher);
+Publisher<cv::Mat> display_pub_(1);
 extern std::shared_ptr<SerialPort> serial;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
@@ -18,9 +19,7 @@ ArmorDetect::ArmorDetect() {
     ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     predictor = std::make_shared<EKFPredictor>();
     as = std::make_shared<AngleSolver>();
-    context = zmq_ctx_new();
-    publisher = zmq_socket(context,ZMQ_PUB);
-    bind = zmq_bind(publisher, "tcp://*:9000");
+
 }
 
 void ArmorDetect::color_check(const char color, std::vector<OvInference::Detection> &results) {
@@ -100,7 +99,6 @@ void ArmorDetect::draw_target(const OvInference::Detection &obj, cv::Mat &src) {
 }
 
 void ArmorDetect::run() {
-//    cv::VideoCapture video("/home/ares/Videos/video.mp4");
 
     while (true) {
 
@@ -116,16 +114,12 @@ void ArmorDetect::run() {
             std::vector<OvInference::Detection> results;
             ovinfer->infer(src, results);
             RobotInfo robot_  = serial_sub_.subscribe();
-//            fmt::print(fg(fmt::color::yellow), "robot data pitch {:.3f},yaw {:.3f}, roll {:.3f}, sp {:.3f}. \r\n",
-//                       robot_.ptz_pitch,robot_.ptz_yaw, robot_.ptz_roll, robot_.bullet_speed);
             color_check(robot_.color, results);
-//
+
             OvInference::Detection final_obj;
             final_obj.class_id = -1;           //check if armor
             armor_sort(final_obj, results, src);
-            cv::putText(src, "lock_ed id " + std::to_string(locked_id), cv::Point(15, 30),
-                        cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
-//
+
             draw_target(final_obj, src);
 
             double pitch, yaw, dis;
@@ -171,13 +165,13 @@ void ArmorDetect::run() {
             send_data[5] = int16_t(100 * dis) >> 8;
             bool status = serial->SendBuff(cmd, send_data, 6);
             delete[] send_data;
-            std::cout<<"id "<<final_obj.class_id<<std::endl;
-            tic->fps_calculate();
+            tic->fps_calculate(autoaim_fps);
+            cv::putText(src, "id " + std::to_string(locked_id), cv::Point(15, 15),
+                        cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
+            cv::putText(src, "fps " + std::to_string(autoaim_fps), cv::Point(15, 30),
+                        cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
             fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
-
-            std::vector<uchar> buffer;
-            cv::imencode(".jpg", src, buffer);
-            zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);
+            display_pub_.publish(src);
         } catch (...) {
             std::cout << "[WARNING] camera not ready." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(200));

@@ -33,10 +33,7 @@ private:
     int8_t locked_id = -1;
     int lose_cnt = 0;
     int lock_cnt = 0;
-    //zmq value define
-    void *context;
-    void *publisher;
-    int bind;
+    int autoaim_fps;
 
     double pitch_last,yaw_last,dis_last,id_last;
 

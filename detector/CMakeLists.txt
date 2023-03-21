@@ -13,18 +13,17 @@ find_package(InferenceEngine)
 set(ngraph_DIR "/opt/intel/openvino2022/runtime/cmake")
 find_package(ngraph REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(ZeroMQ REQUIRED)
+
 add_library(${PROJECT_NAME} STATIC
                             src/armor_detect.cpp
                             src/ovinference.cpp)
 
 include_directories(include)
 include_directories(${Eigen3_INCLUDE_DIR})
-include_directories(${ZeroMQ_INCLUDE_DIRS})
+
 
 target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         openvino::runtime
         ${Eigen3_LIBRARIES}
-        ${ZeroMQ_LIBRARY}
         )
