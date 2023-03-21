@@ -11,8 +11,6 @@
 std::shared_ptr<SerialPort> serial;
 std::shared_ptr<Camera> camera;
 std::shared_ptr<ArmorDetect> autoaim;
-extern Publisher<cv::Mat> display_pub_;
-Subscriber<cv::Mat> display_sub_(&display_pub_);
 
 int main() {
 
@@ -25,14 +23,6 @@ int main() {
     std::thread autoaim_thread(&ArmorDetect::run, autoaim);
 
 
-    while(true){
-        cv::Mat src;
-        src = display_sub_.subscribe();
-        if(src.empty())
-            continue;
-//        cv::imshow("video", src);
-//        cv::waitKey(1);
-    }
     autoaim_thread.join();
     camera_thread.join();
     serial_thread.join();

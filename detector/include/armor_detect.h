@@ -17,6 +17,7 @@
 typedef std::pair<double, cv::Mat> Camdata;
 extern Publisher<Camdata> cam_publisher;
 extern Publisher<RobotInfo> serial_publisher;
+
 class ArmorDetect{
 public:
     explicit ArmorDetect();
@@ -32,8 +33,10 @@ private:
     int8_t locked_id = -1;
     int lose_cnt = 0;
     int lock_cnt = 0;
-
-
+    //zmq value define
+    void *context;
+    void *publisher;
+    int bind;
 
     double pitch_last,yaw_last,dis_last,id_last;
 

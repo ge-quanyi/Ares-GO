@@ -18,7 +18,7 @@ public:
         return time_stamp;
     };
 
-    int fps_calculate(){
+    void fps_calculate(){
 //        std::cout<<"fps calculate"<<std::endl;
         fps++;
         auto time_ = this_time();

@@ -7,8 +7,8 @@
 #include <fmt/color.h>
 #include <thread>
 #include <mutex>
+#include "zmq.hpp"
 
-Publisher<cv::Mat> display_pub_(5);
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 Subscriber<RobotInfo> serial_sub_(&serial_publisher);
 extern std::shared_ptr<SerialPort> serial;
@@ -18,6 +18,9 @@ ArmorDetect::ArmorDetect() {
     ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     predictor = std::make_shared<EKFPredictor>();
     as = std::make_shared<AngleSolver>();
+    context = zmq_ctx_new();
+    publisher = zmq_socket(context,ZMQ_PUB);
+    bind = zmq_bind(publisher, "tcp://*:9000");
 }
 
 void ArmorDetect::color_check(const char color, std::vector<OvInference::Detection> &results) {
@@ -169,11 +172,12 @@ void ArmorDetect::run() {
             bool status = serial->SendBuff(cmd, send_data, 6);
             delete[] send_data;
             std::cout<<"id "<<final_obj.class_id<<std::endl;
-
-            display_pub_.publish(src);
             tic->fps_calculate();
             fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
 
+            std::vector<uchar> buffer;
+            cv::imencode(".jpg", src, buffer);
+            zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);
         } catch (...) {
             std::cout << "[WARNING] camera not ready." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
