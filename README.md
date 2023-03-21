@@ -26,4 +26,9 @@ install eigen3
 ```shell
 sudo apt install libeigen3-dev
 ```
-
+install zmq
+```shell
+sudo apt install libzmq3-dev
+pip install pyzmq
+git clone https://github.com/zeromq/libzmq.git
+```
