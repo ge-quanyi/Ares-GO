@@ -132,7 +132,7 @@ void ArmorDetect::run() {
                 armor.id = final_obj.class_id;
                 cv::Point3f cam_pred;
                 predictor->predict(armor, cam_pred, robot_);
-                as->getAngle_nofix(cam_, pitch, yaw, dis);
+                as->getAngle_nofix(cam_pred, pitch, yaw, dis);
             }
 //
             if (final_obj.class_id > -1) {
