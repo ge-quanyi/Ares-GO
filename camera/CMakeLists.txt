@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(camera)
 
-find_package(OpenCV 4 REQUIRED)
+find_package(OpenCV 3 REQUIRED)
 find_package(fmt)
 
 include_directories(${OpenCV_INCLUDE_DIRS})

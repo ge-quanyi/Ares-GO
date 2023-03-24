@@ -7,7 +7,7 @@ include_directories(
 )
 
 #查找必要的依赖包
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3 REQUIRED)
 set(InferenceEngine_DIR "/opt/intel/openvino2022/runtime/cmake")
 find_package(InferenceEngine)
 set(ngraph_DIR "/opt/intel/openvino2022/runtime/cmake")

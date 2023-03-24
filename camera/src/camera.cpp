@@ -9,7 +9,7 @@
 #include <string.h>
 #include "../include/camera.h"
 
-Publisher<Camdata> cam_publisher(5);
+Publisher<Camdata> cam_publisher(1);
 
 Camera::Camera(const char *SN, const int width, const int height) :
         image_width(width), image_height(height), cameraSN_(SN) {

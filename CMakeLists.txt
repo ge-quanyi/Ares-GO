@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 SET(Eigen3_INCLUDE_DIR "/usr/include/eigen3")
-find_package(OpenCV 4 REQUIRED)
+find_package(OpenCV 3 REQUIRED)
 find_package(fmt)
 find_package(ZeroMQ REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})

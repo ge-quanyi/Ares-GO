@@ -1,7 +1,7 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <opencv2/opencv.hpp>
-# pragma once
 
 class Classifier{
 public:

@@ -72,7 +72,6 @@ void OvInference::infer(cv::Mat &img , std::vector<Detection>& final_result) {
 
 //    std::cout<< "tensor shape "<<output_shape<<std::endl; //[1,25200,49]
 
-
     std::vector<cv::Rect> boxes; //用于NMS
     std::vector<Obj> objs;
     std::vector<int> class_ids;
