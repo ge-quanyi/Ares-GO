@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(detector)
-
+set(CMAKE_CXX_STANDARD 17)
 include_directories(
         #OpenVINO推理引擎的头文件
         /opt/intel/openvino2022/runtime/include/
@@ -16,7 +16,8 @@ find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC
                             src/armor_detect.cpp
-                            src/ovinference.cpp)
+                            src/ovinference.cpp
+                            include/classifier.hpp)
 
 include_directories(include)
 include_directories(${Eigen3_INCLUDE_DIR})

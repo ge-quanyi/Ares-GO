@@ -16,10 +16,10 @@ extern std::shared_ptr<SerialPort> serial;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
     pnpsolver = std::make_shared<PNPSolver>("../params/ost.yaml");
-    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
+//    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     predictor = std::make_shared<EKFPredictor>();
     as = std::make_shared<AngleSolver>();
-
+    classifier = std::make_shared<Classifier>("../detector/model/fc.onnx", "../detector/model/label.txt", 0.7);
 }
 
 void ArmorDetect::color_check(const char color, std::vector<OvInference::Detection> &results) {
@@ -98,6 +98,158 @@ void ArmorDetect::draw_target(const OvInference::Detection &obj, cv::Mat &src) {
     cv::line(src, obj.obj.p3, obj.obj.p4, cv::Scalar(0, 0, 255), 3);
 }
 
+
+//traditional
+void ArmorDetect::detect(cv::Mat &src, cv::Mat &dst, const int team ,\
+                        std::vector<OvInference::Detection>& objs) {
+    cv::Mat gray_img, threshold_img;
+    cv::cvtColor(src,gray_img,cv::COLOR_BGR2GRAY);
+    cv::threshold(gray_img,threshold_img,200,255,cv::THRESH_BINARY);
+
+    dst = threshold_img.clone();
+
+    std::vector<std::vector<cv::Point>> contours;
+    std::vector<cv::Vec4i> white_hierarchy;
+    findContours(dst, contours, white_hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
+    std::cout<<"contours size "<<contours.size()<<std::endl;
+    int index = -1;
+    cv::RotatedRect lightBar_miniArea;
+    LightBar light;
+    std::vector<LightBar> lightbar_seq;
+    for(const auto &contour: contours){
+        index++;
+        if(contour.size()<20)
+            continue;
+        lightBar_miniArea = minAreaRect(contour);
+        //
+        std::vector<cv::Point2f> points(4);//注意，不同opencv版本定义的点的顺序不一样
+        lightBar_miniArea.points(points.data());
+        if(lightBar_miniArea.size.width > lightBar_miniArea.size.height){
+            light.angle = fabs(lightBar_miniArea.angle) + 90;
+            light.height = lightBar_miniArea.size.width;
+            light.width = lightBar_miniArea.size.height;
+            light.p1 = (points[2] + points[3])/2;
+            light.p2 = (points[0] + points[1])/2;
+            ///todo sort point
+            //light.points()
+        }else{
+            light.angle = fabs(lightBar_miniArea.angle);
+            light.height = lightBar_miniArea.size.height;
+            light.width = lightBar_miniArea.size.width;
+            light.p1 = (points[1] + points[2])/2;
+            light.p2 = (points[0] + points[3])/2;
+//            std::cout<<"pu "<<light.point_up<<std::endl;
+        }
+
+        if((light.height / light.width) < 3)
+            continue;
+        if(light.angle<45 || light.angle>135){
+            //check color
+            int r_sum = 0, b_sum = 0;
+            auto rect = lightBar_miniArea.boundingRect();
+            if(rect.x>=0 && rect.y>=0 && rect.x+rect.width<= src.cols&& \
+                rect.y>=0 && rect.height>=0 && rect.y+rect.height<=src.rows){
+                auto roi_img = src(rect);
+                for(int m = 0; m < roi_img.rows; ++m){
+                    for (int n = 0; n < roi_img.cols; ++n) {
+                        if(cv::pointPolygonTest(contour,cv::Point2f(rect.x+n, rect.y+m), false)>=0){
+                            r_sum += roi_img.at<cv::Vec3b>(n,m)[2];
+                            b_sum += roi_img.at<cv::Vec3b>(n,m)[0];
+                        }
+                    }
+                }
+            }
+            if(team == 1){ //find red
+                if(r_sum > b_sum){
+                    cv::drawContours(src,contours,index,cv::Scalar(0,0,0),1);
+//                                    cv::circle(src, light.p1,5, cv::Scalar(0,255,0),-1);
+                    lightbar_seq.push_back(light);
+                }
+            }else if(team ==2){ //find blue
+                if(r_sum < b_sum){
+                    cv::drawContours(src,contours,index,cv::Scalar(0,0,0),1);
+//                                    cv::circle(src, light.p1,5, cv::Scalar(0,255,0),-1);
+                    lightbar_seq.push_back(light);
+                }
+            }
+        }
+
+    }
+
+    std::cout<<"light bar size "<<lightbar_seq.size()<<std::endl;
+    std::vector<Armor_t> armor_seq;
+    Armor_t tmp_armor;
+    OvInference::Detection obj;
+    //match armor
+    for(auto i = lightbar_seq.begin();i != lightbar_seq.end() - 1; i++){
+        for(auto j = i+1; j != lightbar_seq.end(); j++){
+            cv::Point2f vec_1 = cv::Point2f (i->p2.x - i->p1.x, i->p2.y - i->p1.y);
+            cv::Point2f center_1 = cv::Point2f ((i->p2.x + i->p1.x)/2, (i->p2.y + i->p1.y)/2);
+            cv::Point2f vec_2 = cv::Point2f (j->p2.x - j->p1.x, j->p2.y - j->p1.y);
+            cv::Point2f center_2 = cv::Point2f ((j->p2.x + j->p1.x)/2, (j->p2.y + j->p1.y)/2);
+            double vec1_length = sqrt(pow(vec_1.x,2)+pow(vec_1.y,2));
+            double vec2_length = sqrt(pow(vec_2.x,2)+pow(vec_2.y,2));
+            double vec_1_angle = i->angle;
+            double vec_2_angle = j->angle;
+
+            if(fabs(vec_1_angle - vec_2_angle) > 6)
+                continue;
+            float max_l = std::max(vec1_length, vec2_length);
+            float min_l = std::min(vec2_length, vec2_length);
+            if(max_l / min_l > 1.5)
+                continue;
+
+            //todo add rectangle or pingxing
+            double light_dis = sqrt(pow(center_1.x-center_2.x,2) + pow(center_1.y-center_2.y,2));
+            double rate_max = light_dis / min_l;
+            double rate_min = light_dis / max_l;
+            if(rate_max < 5 && rate_min>1){
+                cv::Point2f armor_center = cv::Point2f ((center_1.x+center_2.x)/2, (center_1.y+center_2.y)/2);
+
+                //todo add classier
+                float height = (vec2_length+vec2_length)/2;
+                float width = light_dis;
+                float armor_angle = (vec_2_angle+vec_1_angle)/2;
+                cv::RotatedRect armor_rect(armor_center,cv::Size(width,height), armor_angle);
+                cv::Rect armor_roi = armor_rect.boundingRect();
+                armor_roi.x += 0.1*armor_roi.width;
+                armor_roi.y -= 0.5*armor_roi.height;
+                armor_roi.height += armor_roi.height;
+                armor_roi.width -= 0.2*armor_roi.width;
+                if(armor_roi.x>=0 && armor_roi.y>=0&& armor_roi.x+armor_roi.width<=src.cols&&armor_roi.y+armor_roi.height<=src.rows){
+                    cv::Mat roi_img = src(armor_roi);
+                    int num = classifier->predict(roi_img);
+                    std::cout<<"id "<<num<<std::endl;
+                    tmp_armor = {i->p2, i->p1, j->p1, j->p2, armor_center,num};
+                    //todo check if is armor
+                    obj.obj = {armor_roi,tmp_armor.p1,tmp_armor.p2,tmp_armor.p3,tmp_armor.p4};
+                    obj.class_id = num;
+                    obj.confidence = 0.5;
+                    if(num>0){
+                        armor_seq.push_back(tmp_armor);
+                        objs.push_back(obj);
+                    }
+
+                }
+                //draw
+                cv::circle(src, tmp_armor.p1,5, cv::Scalar(0,255,0),2);
+                cv::circle(src, tmp_armor.p2,4, cv::Scalar(0,255,0),2);
+                cv::circle(src, tmp_armor.p3,3, cv::Scalar(0,255,0),2);
+                cv::circle(src, tmp_armor.p4,2, cv::Scalar(0,255,0),2);
+                cv::circle(src, armor_center,3, cv::Scalar(0,255,0),-1);
+                cv::line(src,tmp_armor.p1, tmp_armor.p3,cv::Scalar(0,0,255),2);
+                cv::line(src,tmp_armor.p2, tmp_armor.p4,cv::Scalar(0,0,255),2);
+                cv::line(src,tmp_armor.p1, tmp_armor.p2,cv::Scalar(0,0,255),2);
+                cv::line(src,tmp_armor.p3, tmp_armor.p4,cv::Scalar(0,0,255),2);
+
+            }
+        }
+    }
+    std::cout<<"armor size "<<armor_seq.size()<<std::endl;
+    //
+
+}
+
 void ArmorDetect::run() {
 
     while (true) {
@@ -111,11 +263,15 @@ void ArmorDetect::run() {
             time_stamp = data.first;
             if(src.empty())
                 continue;
-            std::vector<OvInference::Detection> results;
-            ovinfer->infer(src, results);
-            RobotInfo robot_  = serial_sub_.subscribe();
-            color_check(robot_.color, results);
 
+            RobotInfo robot_  = serial_sub_.subscribe();
+            std::vector<OvInference::Detection> results;
+            // choose tradition or ai
+//            ovinfer->infer(src, results);
+//            color_check(robot_.color, results);
+            cv::Mat dst;
+            detect(src,dst,1,results);
+            
             OvInference::Detection final_obj;
             final_obj.class_id = -1;           //check if armor
             armor_sort(final_obj, results, src);

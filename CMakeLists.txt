@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(Ares_CV)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 SET(Eigen3_INCLUDE_DIR "/usr/include/eigen3")

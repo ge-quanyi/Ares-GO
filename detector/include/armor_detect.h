@@ -13,10 +13,28 @@
 #include "../../serial/serial.h"
 #include "anglesolver.hpp"
 #include "Message.hpp"
+#include "classifier.hpp"
 
 typedef std::pair<double, cv::Mat> Camdata;
 extern Publisher<Camdata> cam_publisher;
 extern Publisher<RobotInfo> serial_publisher;
+
+//use for traditional image process
+struct LightBar{
+    float width;
+    float height;
+    float angle;
+    cv::Point p1;
+    cv::Point p2;
+};
+struct Armor_t{
+    cv::Point2f p1;
+    cv::Point2f p2;
+    cv::Point2f p3;
+    cv::Point2f p4;
+    cv::Point2f center;
+    int id;
+};
 
 class ArmorDetect{
 public:
@@ -40,6 +58,10 @@ private:
     void color_check(const char color, std::vector<OvInference::Detection>& results);
     void armor_sort(OvInference::Detection& final_obj, std::vector<OvInference::Detection>& results, cv::Mat& src);
     void draw_target(const OvInference::Detection& obj, cv::Mat& src);
+
+    //tradition
+    void detect(cv::Mat& src, cv::Mat& dst, const int team, std::vector<OvInference::Detection>& objs);
+    std::shared_ptr<Classifier> classifier;
 
 };
 #endif //ARES_CV_ARMOR_DETECT_H
