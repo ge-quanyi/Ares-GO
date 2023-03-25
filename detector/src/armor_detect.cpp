@@ -21,6 +21,7 @@ ArmorDetect::ArmorDetect() {
     predictor = std::make_shared<EKFPredictor>();
     as = std::make_shared<AngleSolver>();
 //    num_c = std::make_shared<Classifier>("../detector/model/fc.onnx", "../detector/model/label.txt", 0.7);
+    std::cout<<"detector inited "<<std::endl;
 }
 
 void ArmorDetect::color_check(const char color, std::vector<ArmorObject> &results) {
@@ -282,11 +283,12 @@ void ArmorDetect::run() {
             final_obj.cls = 0;           //check if armor
             armor_sort(final_obj, results, src);
 
-            draw_target(final_obj, src);
+
 
             double pitch, yaw, dis;
             pitch = yaw = dis = 0;
             if (final_obj.cls > 0) {
+                draw_target(final_obj, src);
                 auto cam_ = pnpsolver->get_cam_point(final_obj);
                 Armor armor;
                 armor.time_stamp = time_stamp;
