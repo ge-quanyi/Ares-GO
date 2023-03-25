@@ -3,7 +3,7 @@
 #define __PNP_
 #include <opencv2/opencv.hpp>
 #include "ovinference.h"
-
+#include "inference.h"
 class PNPSolver{
 public:
 
@@ -22,15 +22,15 @@ public:
         std::cout<<"d "<<D_<<std::endl;
     }
 
-    inline cv::Point3f get_cam_point(const OvInference::Detection& obj){
-        if(obj.class_id<0)
+    inline cv::Point3f get_cam_point(const ArmorObject& obj){
+        if(obj.cls<=0)
             return cv::Point3f (0,0,0);
         object_corners.clear();
         image_points.clear();
         cv::Point3f tmp_point;
         // big armor
-        if(obj.class_id==0||obj.class_id==9||obj.class_id==1||
-                obj.class_id==10||obj.class_id==8||obj.class_id==17){
+        //todo infantry3
+        if(obj.cls==1){
             for (int i = 0; i < 4; i++){
                 tmp_point = {armor_big_pt[i][0],armor_big_pt[i][1],0};
                 object_corners.push_back(tmp_point);
@@ -41,7 +41,7 @@ public:
                 object_corners.push_back(tmp_point);
             }
         }
-        image_points = {obj.obj.p1,obj.obj.p2,obj.obj.p3,obj.obj.p4};
+        image_points = {obj.pts[0],obj.pts[1],obj.pts[2],obj.pts[3]};
 
         cv::Mat rvec, tvec;
         cv::solvePnP(cv::Mat(object_corners), cv::Mat(image_points), K_, D_, rvec, tvec, false);

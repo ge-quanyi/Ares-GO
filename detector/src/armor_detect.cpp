@@ -16,23 +16,24 @@ extern std::shared_ptr<SerialPort> serial;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
     pnpsolver = std::make_shared<PNPSolver>("../params/ost.yaml");
-    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
+//    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
+    ovinfer = std::make_shared<Inference>("../detector/model/opt-0527-001.xml");
     predictor = std::make_shared<EKFPredictor>();
     as = std::make_shared<AngleSolver>();
 //    num_c = std::make_shared<Classifier>("../detector/model/fc.onnx", "../detector/model/label.txt", 0.7);
 }
 
-void ArmorDetect::color_check(const char color, std::vector<OvInference::Detection> &results) {
+void ArmorDetect::color_check(const char color, std::vector<ArmorObject> &results) {
 
     for (auto i = results.begin(); i != results.end();) {
         if (color == 'r') {
-            if (i->class_id < 9)
+            if (i->color != 0)
                 i = results.erase(i);
             else
                 ++i;
         } else {
 //            std::cout<<"passsss red"<<std::endl;
-            if (i->class_id > 9)
+            if (i->color != 1)
                 i = results.erase(i);
             else
                 ++i;
@@ -41,29 +42,28 @@ void ArmorDetect::color_check(const char color, std::vector<OvInference::Detecti
 
 }
 
-void
-ArmorDetect::armor_sort(OvInference::Detection &final_obj, std::vector<OvInference::Detection> &results, cv::Mat &src) {
+void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &results, cv::Mat &src) {
     if (results.size() == 0) {
         lose_cnt++;
         if (lose_cnt > 3) {
             lose_cnt = 0;
-            locked_id = -1; //lose
+            locked_id = 0; //lose
         }
     } else
         lose_cnt = 0;
 
     if (results.size() == 1) {
         final_obj = results[0];
-        locked_id = final_obj.class_id;
+        locked_id = final_obj.cls;
     } else {
-        if (locked_id == -1) { //already has not locked id yet
+        if (locked_id == 0) { //already has not locked id yet
             double min_dis = 10000;
             int min_idx = -1;
             for (int i = 0; i < results.size(); ++i) {
                 double obj_center_x =
-                        0.25 * (results[i].obj.p1.x + results[i].obj.p2.x + results[i].obj.p3.x + results[i].obj.p4.x);
+                        0.25 * (results[i].pts[0].x + results[i].pts[1].x + results[i].pts[2].x + results[i].pts[3].x);
                 double obj_center_y =
-                        0.25 * (results[i].obj.p1.y + results[i].obj.p2.y + results[i].obj.p3.y + results[i].obj.p4.y);
+                        0.25 * (results[i].pts[0].y + results[i].pts[1].y + results[i].pts[2].y + results[i].pts[3].y);
                 double dis = fabs(obj_center_x - src.cols / 2) + fabs(obj_center_y - src.rows / 2);
                 if (dis < min_dis) {
                     min_dis = dis;
@@ -74,14 +74,14 @@ ArmorDetect::armor_sort(OvInference::Detection &final_obj, std::vector<OvInferen
                 final_obj = results[min_idx];
                 lock_cnt++;
                 if (lock_cnt > 3) {
-                    locked_id = final_obj.class_id;
+                    locked_id = final_obj.cls;
                     lock_cnt = 0;
                 }
 
             }
         } else {
             for (const auto re: results) {
-                if (re.class_id == locked_id) {
+                if (re.cls == locked_id) {
                     final_obj = re;
                     break;
                 }
@@ -91,11 +91,11 @@ ArmorDetect::armor_sort(OvInference::Detection &final_obj, std::vector<OvInferen
     }
 }
 
-void ArmorDetect::draw_target(const OvInference::Detection &obj, cv::Mat &src) {
-    cv::line(src, obj.obj.p1, obj.obj.p3, cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.obj.p2, obj.obj.p4, cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.obj.p1, obj.obj.p2, cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.obj.p3, obj.obj.p4, cv::Scalar(0, 0, 255), 3);
+void ArmorDetect::draw_target(const ArmorObject &obj, cv::Mat &src) {
+    cv::line(src, obj.pts[0], obj.pts[2], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.pts[1], obj.pts[3], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.pts[0], obj.pts[1], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.pts[2], obj.pts[3], cv::Scalar(0, 0, 255), 3);
 }
 
 
@@ -269,45 +269,47 @@ void ArmorDetect::run() {
                 continue;
 
             RobotInfo robot_  = serial_sub_.subscribe();
-            std::vector<OvInference::Detection> results;
+//            std::vector<OvInference::Detection> results;
+            std::vector<ArmorObject> results;
             // choose tradition or ai
-            ovinfer->infer(src, results);
+            ovinfer->detect(src, results);
             color_check(robot_.color, results);
 //            cv::Mat dst;
 //            detect(src,dst,1,results);
             
-            OvInference::Detection final_obj;
-            final_obj.class_id = -1;           //check if armor
+//            OvInference::Detection final_obj;
+            ArmorObject final_obj;
+            final_obj.cls = 0;           //check if armor
             armor_sort(final_obj, results, src);
 
             draw_target(final_obj, src);
 
             double pitch, yaw, dis;
             pitch = yaw = dis = 0;
-            if (final_obj.class_id > -1) {
+            if (final_obj.cls > 0) {
                 auto cam_ = pnpsolver->get_cam_point(final_obj);
                 Armor armor;
                 armor.time_stamp = time_stamp;
                 armor.cam_point_ = cam_;
-                armor.id = final_obj.class_id;
+                armor.id = final_obj.cls;
                 cv::Point3f cam_pred;
                 predictor->predict(armor, cam_pred, robot_);
                 as->getAngle_nofix(cam_, pitch, yaw, dis);
             }
 //
-            if (final_obj.class_id > -1) {
+            if (final_obj.cls > 0) {
                 pitch_last = pitch;
                 yaw_last = yaw;
                 dis_last = dis;
-                id_last = final_obj.class_id;
+                id_last = final_obj.cls;
             } else {
-                if (id_last > -1) {
-                    final_obj.class_id = id_last;
+                if (id_last > 0) {
+                    final_obj.cls = id_last;
                     pitch = pitch_last;
                     yaw = yaw_last;
                     dis = dis_last;
                     pitch_last = dis_last = yaw_last = 0;
-                    id_last = -1;
+                    id_last = 0;
                 } else {
                     pitch = yaw = dis = 0;
 
@@ -316,7 +318,7 @@ void ArmorDetect::run() {
             }
             char *send_data = new char[6];
             char cmd = 0x31;
-            if (final_obj.class_id == -1) { cmd = 0x30; }
+            if (final_obj.cls == 0) { cmd = 0x30; }
             send_data[0] = int16_t(1000 * pitch);
             send_data[1] = int16_t(1000 * pitch) >> 8;
             send_data[2] = int16_t(1000 * yaw);

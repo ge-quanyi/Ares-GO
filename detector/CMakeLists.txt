@@ -17,7 +17,8 @@ find_package(Eigen3 REQUIRED)
 add_library(${PROJECT_NAME} STATIC
                             src/armor_detect.cpp
                             src/ovinference.cpp
-                            include/classifier.hpp)
+                            include/classifier.hpp
+                            src/inference.cpp)
 
 include_directories(include)
 include_directories(${Eigen3_INCLUDE_DIR})

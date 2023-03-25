@@ -14,6 +14,7 @@
 #include "anglesolver.hpp"
 #include "Message.hpp"
 #include "classifier.hpp"
+#include "inference.h"
 
 typedef std::pair<double, cv::Mat> Camdata;
 extern Publisher<Camdata> cam_publisher;
@@ -45,19 +46,20 @@ public:
 private:
     std::shared_ptr<PNPSolver> pnpsolver;
     std::unique_ptr<Tictok> tic;
-    std::shared_ptr<OvInference> ovinfer;
+//    std::shared_ptr<OvInference> ovinfer;
+    std::shared_ptr<Inference> ovinfer;
     std::shared_ptr<EKFPredictor> predictor;
     std::shared_ptr<AngleSolver> as;
-    int8_t locked_id = -1;
+    int8_t locked_id = 0;
     int lose_cnt = 0;
     int lock_cnt = 0;
     int autoaim_fps;
 
     double pitch_last,yaw_last,dis_last,id_last;
 
-    void color_check(const char color, std::vector<OvInference::Detection>& results);
-    void armor_sort(OvInference::Detection& final_obj, std::vector<OvInference::Detection>& results, cv::Mat& src);
-    void draw_target(const OvInference::Detection& obj, cv::Mat& src);
+    void color_check(const char color, std::vector<ArmorObject>& results);
+    void armor_sort(ArmorObject& final_obj, std::vector<ArmorObject>& results, cv::Mat& src);
+    void draw_target(const ArmorObject& obj, cv::Mat& src);
 
     //tradition
     void detect(cv::Mat& src, cv::Mat& dst, const int team, std::vector<OvInference::Detection>& objs);
