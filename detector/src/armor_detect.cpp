@@ -27,14 +27,13 @@ ArmorDetect::ArmorDetect() {
 void ArmorDetect::color_check(const char color, std::vector<ArmorObject> &results) {
 
     for (auto i = results.begin(); i != results.end();) {
-        if (color == 'r') {
-            if (i->color != 0)
+        if (color == 'r') { //detect blue
+            if (i->color == 1 || i->color == 2)
                 i = results.erase(i);
             else
                 ++i;
         } else {
-//            std::cout<<"passsss red"<<std::endl;
-            if (i->color != 1)
+            if (i->color == 0 || i->color ==2 )
                 i = results.erase(i);
             else
                 ++i;
@@ -93,10 +92,10 @@ void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &r
 }
 
 void ArmorDetect::draw_target(const ArmorObject &obj, cv::Mat &src) {
-    cv::line(src, obj.pts[0], obj.pts[2], cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.pts[1], obj.pts[3], cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.pts[0], obj.pts[1], cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.pts[2], obj.pts[3], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.apex[0], obj.apex[2], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.apex[1], obj.apex[3], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.apex[0], obj.apex[1], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.apex[2], obj.apex[3], cv::Scalar(0, 0, 255), 3);
 }
 
 
@@ -255,6 +254,13 @@ void ArmorDetect::detect(cv::Mat &src, cv::Mat &dst, const int team ,\
 
 }
 
+
+bool ArmorDetect::if_shoot(double pitch, double yaw) {
+    if(fabs(pitch)<0.01 && fabs(yaw)<0.01)
+        return true;
+    else
+        return false;
+}
 void ArmorDetect::run() {
 
     while (true) {
@@ -282,8 +288,6 @@ void ArmorDetect::run() {
             ArmorObject final_obj;
             final_obj.cls = 0;           //check if armor
             armor_sort(final_obj, results, src);
-
-
 
             double pitch, yaw, dis;
             pitch = yaw = dis = 0;
@@ -319,7 +323,7 @@ void ArmorDetect::run() {
 
             }
             char *send_data = new char[6];
-            char cmd = 0x31;
+            char cmd = 0;
             if (final_obj.cls == 0) { cmd = 0x30; }
             send_data[0] = int16_t(1000 * pitch);
             send_data[1] = int16_t(1000 * pitch) >> 8;
@@ -330,8 +334,11 @@ void ArmorDetect::run() {
             bool status = serial->SendBuff(cmd, send_data, 6);
             delete[] send_data;
             tic->fps_calculate(autoaim_fps);
-            cv::putText(src, "id " + std::to_string(locked_id), cv::Point(15, 15),
-                        cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
+            if(final_obj.cls>0){
+                cv::putText(src, "id " + std::to_string(locked_id)+"color: "+std::to_string(final_obj.color), cv::Point(final_obj.apex[0].x-5, final_obj.apex[0].y-5),
+                            cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(0, 0, 255));
+            }
+
             cv::putText(src, "fps " + std::to_string(autoaim_fps), cv::Point(15, 30),
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
             fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);

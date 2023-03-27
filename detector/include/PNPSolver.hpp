@@ -41,7 +41,7 @@ public:
                 object_corners.push_back(tmp_point);
             }
         }
-        image_points = {obj.pts[0],obj.pts[1],obj.pts[2],obj.pts[3]};
+        image_points = {obj.apex[0],obj.apex[1],obj.apex[2],obj.apex[3]};
 
         cv::Mat rvec, tvec;
         cv::solvePnP(cv::Mat(object_corners), cv::Mat(image_points), K_, D_, rvec, tvec, false);

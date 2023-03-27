@@ -60,6 +60,7 @@ private:
     void color_check(const char color, std::vector<ArmorObject>& results);
     void armor_sort(ArmorObject& final_obj, std::vector<ArmorObject>& results, cv::Mat& src);
     void draw_target(const ArmorObject& obj, cv::Mat& src);
+    bool if_shoot(double pitch, double yaw);
 
     //tradition
     void detect(cv::Mat& src, cv::Mat& dst, const int team, std::vector<OvInference::Detection>& objs);
