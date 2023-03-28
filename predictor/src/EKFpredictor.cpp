@@ -68,10 +68,10 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
     ekf.predict(predictfunc);//predict
 
 
-    //TODO: add evaluation to check
 
     Eigen::Matrix<double, 5, 1> Xe = ekf.update(measure, Yr);//best evalute
-
+    double value = ekf.estimate();
+    std::cout<<"ekf estimate "<<value<<"\r\n";
     double predict_time = current_armor.distance/robot_.bullet_speed + 0.001;
 
     predictfunc.delta_t = predict_time;//use measure speed to predict next

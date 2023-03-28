@@ -62,8 +62,10 @@ public:
         return Xe;
     }
 
-    void estimate() {
-        /// TODO:
+    double estimate() {
+        VectorY Ek = Yp - H*Xp;
+        double value = Ek.transpose()*(H*P.inverse()*H.transpose() + R).inverse()*Ek;
+        return value;
     }
 
     VectorX Xe;     // 估计状态变量    5x1
