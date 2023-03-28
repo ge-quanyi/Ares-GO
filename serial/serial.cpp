@@ -369,28 +369,29 @@ int SerialPort::ReceiveBuff()
                 }
                 int16_t buff[4];
 
-                buff[0] = ((uint16_t)buff_r_[5]<<8)|uint8_t (buff_r_[6]);  //pitch
-                buff[1] = ((uint16_t)buff_r_[7]<<8)|uint8_t (buff_r_[8]);  //yaw
+                buff[0] = ((uint16_t)buff_r_[5]<<8)|uint8_t (buff_r_[6]);  //q0
+                buff[1] = ((uint16_t)buff_r_[7]<<8)|uint8_t (buff_r_[8]);  //q1
 
-                double pitch_ptz = double(buff[0]) /1000;
-                double yaw_ptz = double (buff[1]) /1000;
+                double q0 = double(buff[0]) /1000;
+                double q1 = double (buff[1]) /1000;
 
-                buff[2] =  ((uint16_t)buff_r_[9]<<8)| uint8_t (buff_r_[10]); //roll
+                buff[2] =  ((uint16_t)buff_r_[9]<<8)| uint8_t (buff_r_[10]); //q2
 
-                buff[3] = ((uint16_t)buff_r_[11]<<8)| uint8_t (buff_r_[12]); //bulled_speed
-
-                double roll_ptz = double(buff[2])/1000; //角速度
-                double speed_d = double(buff[3]);
-//                uint16_t speed_d =  uint16_t (buff_r_[12])<<8 | uint8_t (buff_r_[13]);
+                buff[3] = ((uint16_t)buff_r_[11]<<8)| uint8_t (buff_r_[12]); //q3
+                buff[4] = ((uint16_t)buff_r_[13]<<8)| uint8_t (buff_r_[14]); //speed
+                double q2 = double(buff[2])/1000; //角速度
+                double q3 = double(buff[3])/1000;
+                double bulled_speed = double(buff[4]);
 
                 //std::cout<<"bit8 "<<hex<<uint8_t(dst_buff[8])<<" "<<"bit9"<<hex<<uint8_t(dst_buff[9])<<std::endl;
-                RobotInfo robot = {buff_r_[4], pitch_ptz, \
-                yaw_ptz, roll_ptz,double(speed_d)};
+
+                RobotInfo robot = {buff_r_[4], q0,q1,q2,q3,double(bulled_speed)};
                 serial_publisher.publish(robot);
 //                cout<<"port buff: "
-//                    <<" pitch_ptz: "<<pitch_ptz
-//                    <<", yaw_ptz: "<<yaw_ptz
-//                    <<", speed_d: "<<speed_d
+//                    <<" q0: "<<q0
+//                    <<", q1: "<<q1
+//                    <<", q2: "<<q2
+//                    <<", q3: "<<q3
 ////                    <<", pitch_w: "<<pitch_w  //抬头负，低头正
 ////                    <<", yaw_w: "<<yaw_w
 //                    <<endl;  //顺时针负，逆时针正

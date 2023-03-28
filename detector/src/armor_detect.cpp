@@ -256,7 +256,7 @@ void ArmorDetect::detect(cv::Mat &src, cv::Mat &dst, const int team ,\
 
 
 bool ArmorDetect::if_shoot(const cv::Point3f& cam_) {
-    if(fabs(cam_.x )<0.1 && fabs(cam_.y)<0.1)
+    if(fabs(cam_.z )<0.1 && fabs(cam_.y)<0.1)
         return true;
     else
         return false;
@@ -276,6 +276,10 @@ void ArmorDetect::run() {
                 continue;
 
             RobotInfo robot_  = serial_sub_.subscribe();
+            as->getEuler(robot_);
+//            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
+//            std::cout<<"euler "<<as->euler[0]<< " "<<as->euler[1]<<" "<<as->euler[2]<<"\r\n";
+//            std::cout<<"q "<<robot_.q[0]<<" "<<robot_.q[1]<<" "<<robot_.q[2]<<" "<<robot_.q[3]<<"\r\n";
 //            std::vector<OvInference::Detection> results;
             std::vector<ArmorObject> results;
             // choose tradition or ai
@@ -293,15 +297,25 @@ void ArmorDetect::run() {
             char cmd = 0;
             pitch = yaw = dis = 0;
             if (final_obj.cls > 0) {
+                //draw
                 draw_target(final_obj, src);
+                cv::Point2f center = cv::Point2f ((final_obj.apex[0].x+final_obj.apex[1].x+final_obj.apex[2].x+final_obj.apex[3].x)/4,\
+                (final_obj.apex[0].y+final_obj.apex[1].y+final_obj.apex[2].y+final_obj.apex[3].y)/4);
+
                 auto cam_ = pnpsolver->get_cam_point(final_obj);
+
+                cv::circle(src,center,5,cv::Scalar(0,255,0),-1);
+
                 Armor armor;
                 armor.time_stamp = time_stamp;
                 armor.cam_point_ = cam_;
                 armor.id = final_obj.cls;
                 cv::Point3f cam_pred;
                 predictor->predict(armor, cam_pred, robot_);
-                as->getAngle_nofix(cam_, pitch, yaw, dis);
+                as->getAngle(cam_pred, pitch, yaw, dis, robot_);
+                cv::Point2f center_pred = pnpsolver->cam2pixel(cam_pred);
+                cv::circle(src,center_pred,5,cv::Scalar(0,0,255),-1);
+//                std::cout<<"cam "<<cam_.y << cam_.z<<"\r\n";
 
                 if(if_shoot(cam_))
                     cmd = 1;

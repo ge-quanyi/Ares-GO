@@ -20,6 +20,10 @@ public:
         fs.release();
         std::cout<<"k "<<K_<<std::endl;
         std::cout<<"d "<<D_<<std::endl;
+        cx = K_.at<double>(0, 2);
+        cy = K_.at<double>(1, 2);
+        fx = K_.at<double>(0, 0);
+        fy = K_.at<double>(1, 1);
     }
 
     inline cv::Point3f get_cam_point(const ArmorObject& obj){
@@ -51,14 +55,21 @@ public:
         return cv::Point3f(X, Y, Z);
 
     }
-    
+
+    cv::Point2f cam2pixel(cv::Point3f camPoint) {
+        float pixel_x = (-camPoint.y * fx / camPoint.x + cx);
+        float pixel_y = (-camPoint.z * fy / camPoint.x + cy);
+        return cv::Point2f(pixel_x, pixel_y);
+    }
+
+
 
 private:
 
     cv::Mat K_;
     cv::Mat D_;
     const std::string& file_path_;
-
+    double fx,fy,cx,cy;
     std::vector<cv::Point3f> object_corners;
     std::vector<cv::Point2f> image_points;
     const float armor_small_pt[4][2] = {

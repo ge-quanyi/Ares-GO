@@ -19,7 +19,7 @@ struct camera_config {
     //设置ROI的X方向偏移
     int nOffsetX = 320;//160                160           320
     //设置ROI的Y方向偏移
-    int nOffsetY = 192;//128                128           192          272
+    int nOffsetY = 272;//128                128           192          272
     //是否开启触发模式
     int TriggerMode = 0;
     //设置触发源

@@ -6,9 +6,7 @@
 
 struct RobotInfo{
     char color;
-    double ptz_pitch;
-    double ptz_yaw;
-    double ptz_roll;
+    double q[4];
     double bullet_speed;
 };
 

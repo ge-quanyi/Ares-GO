@@ -28,12 +28,15 @@ void EKFPredictor::reset() {
     Xr << current_armor.world_point_.x, 0, current_armor.world_point_.y, 0, current_armor.world_point_.z;
     ekf.init(Xr);
     armor_seq.clear();
+    ekf.P.setIdentity();
+    std::cout<<"P reset "<<ekf.P<<"\r\n";
 }
 
 void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const RobotInfo& robot) {
     robot_ = robot;
     auto abs_point = anglesolver->cam2abs(armor.cam_point_, robot_);
     abs2motion(abs_point, current_armor.world_point_);
+//    std::cout<<"abs "<<current_armor.world_point_<<"\r\n";
 
     current_armor.time_stamp = armor.time_stamp;
     current_armor.id = armor.id;
@@ -49,7 +52,7 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
     last_dis = current_armor.distance;
 
     double delta_t = current_armor.time_stamp - last_time;
-    std::cout<<"delta t "<<delta_t<<std::endl;
+//    std::cout<<"delta t "<<delta_t<<std::endl;
     last_time = current_armor.time_stamp;
 
     Predict predictfunc;
@@ -99,7 +102,7 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
 
     cam_pred = anglesolver->abs2cam(abs_pred,robot_);
     if(armor_seq.size()){
-        if(current_armor.time_stamp - armor_seq.back().time_stamp > 2){ //s
+        if(current_armor.time_stamp - armor_seq.back().time_stamp > 1){ //s
             std::cout<<"reset!!"<<std::endl;
             inited = false;
         }

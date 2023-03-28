@@ -2,8 +2,8 @@
 sentry_up:
   pitch_diff: 0
   yaw_diff: 0
-  Q00: 1
-  Q11: 10
+  Q00: 0.1
+  Q11: 100
   Q22: 0.1
   Q33: 100
   Q44: 0.01
