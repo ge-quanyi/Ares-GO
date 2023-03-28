@@ -255,8 +255,8 @@ void ArmorDetect::detect(cv::Mat &src, cv::Mat &dst, const int team ,\
 }
 
 
-bool ArmorDetect::if_shoot(double pitch, double yaw) {
-    if(fabs(pitch)<0.01 && fabs(yaw)<0.01)
+bool ArmorDetect::if_shoot(const cv::Point3f& cam_) {
+    if(fabs(cam_.x )<0.1 && fabs(cam_.y)<0.1)
         return true;
     else
         return false;
@@ -290,6 +290,7 @@ void ArmorDetect::run() {
             armor_sort(final_obj, results, src);
 
             double pitch, yaw, dis;
+            char cmd = 0;
             pitch = yaw = dis = 0;
             if (final_obj.cls > 0) {
                 draw_target(final_obj, src);
@@ -300,7 +301,12 @@ void ArmorDetect::run() {
                 armor.id = final_obj.cls;
                 cv::Point3f cam_pred;
                 predictor->predict(armor, cam_pred, robot_);
-                as->getAngle_nofix(cam_pred, pitch, yaw, dis);
+                as->getAngle_nofix(cam_, pitch, yaw, dis);
+
+                if(if_shoot(cam_))
+                    cmd = 1;
+                else
+                    cmd = 0;
             }
 //
             if (final_obj.cls > 0) {
@@ -323,8 +329,8 @@ void ArmorDetect::run() {
 
             }
             char *send_data = new char[6];
-            char cmd = 0;
-            if (final_obj.cls == 0) { cmd = 0x30; }
+
+
             send_data[0] = int16_t(1000 * pitch);
             send_data[1] = int16_t(1000 * pitch) >> 8;
             send_data[2] = int16_t(1000 * yaw);

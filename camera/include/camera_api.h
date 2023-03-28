@@ -35,7 +35,7 @@ struct camera_config {
     //设置自动曝光时间上限(单位:um)
     double MaxExposure = 50000.0;
     //是否进行自动白平衡
-    int BalanceAuto = 0;
+    int BalanceAuto = 1;
     //选择白平衡通道
     int BalanceSelector = 1;
     //设置白平衡系数
