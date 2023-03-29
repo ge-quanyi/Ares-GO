@@ -112,7 +112,7 @@ private:
     float pitch_diff;
     float yaw_diff;
 
-    cv::Point3f cam2gunDiff = cv::Point3f(0, -0.0395, 0.0805);
+    cv::Point3f cam2gunDiff = cv::Point3f(0.042,0 , 0.044);
     cv::Point3f gun2ptzDiff = cv::Point3f(0, -0.006, 0.061);
 
     Matrix<double, 4, 4> trans;

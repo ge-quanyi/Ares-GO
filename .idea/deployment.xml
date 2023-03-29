@@ -24,8 +24,11 @@
       <paths name="sentry-up (8eb1a3dc-5c9e-4a0e-9379-579e82601544)">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/workspace/Ares-GO" local="$PROJECT_DIR$" />
           </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/build" />
+          </excludedPaths>
         </serverdata>
       </paths>
     </serverData>
