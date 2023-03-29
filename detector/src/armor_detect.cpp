@@ -256,7 +256,7 @@ void ArmorDetect::detect(cv::Mat &src, cv::Mat &dst, const int team ,\
 
 
 bool ArmorDetect::if_shoot(const cv::Point3f& cam_) {
-    if(fabs(cam_.z )<0.1 && fabs(cam_.y)<0.1)
+    if(fabs(cam_.y )<0.1 && fabs(cam_.z)<0.15)
         return true;
     else
         return false;
@@ -315,7 +315,7 @@ void ArmorDetect::run() {
                 as->getAngle(cam_pred, pitch, yaw, dis, robot_);
                 cv::Point2f center_pred = pnpsolver->cam2pixel(cam_pred);
                 cv::circle(src,center_pred,5,cv::Scalar(0,0,255),-1);
-//                std::cout<<"cam "<<cam_.y << cam_.z<<"\r\n";
+                std::cout<<"cam "<<cam_.y <<"  "<< cam_.z<<"\r\n";
 
                 if(if_shoot(cam_))
                     cmd = 1;
@@ -361,7 +361,7 @@ void ArmorDetect::run() {
 
             cv::putText(src, "fps " + std::to_string(autoaim_fps), cv::Point(15, 30),
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
-            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
+//            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
             display_pub_.publish(src);
         } catch (...) {
             std::cout << "[WARNING] camera not ready." << std::endl;

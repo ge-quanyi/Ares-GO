@@ -71,6 +71,9 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
 
     Eigen::Matrix<double, 5, 1> Xe = ekf.update(measure, Yr);//best evalute
     double value = ekf.estimate();
+    if(value>10000){
+        inited = false;
+    }
     std::cout<<"ekf estimate "<<value<<"\r\n";
     double predict_time = current_armor.distance/robot_.bullet_speed + 0.001;
 
@@ -99,8 +102,11 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
     // }
 
 
+    if(inited)
+        cam_pred = anglesolver->abs2cam(abs_pred,robot_);
+    else
+        cam_pred = current_armor.cam_point_;
 
-    cam_pred = anglesolver->abs2cam(abs_pred,robot_);
     if(armor_seq.size()){
         if(current_armor.time_stamp - armor_seq.back().time_stamp > 1){ //s
             std::cout<<"reset!!"<<std::endl;
