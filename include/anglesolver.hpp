@@ -2,6 +2,7 @@
 
 #include <eigen3/Eigen/Eigen>
 #include "data_type.h"
+#include "math.h"
 using namespace Eigen;
 
 class AngleSolver{
@@ -46,7 +47,7 @@ public:
 //        getRotY(euler[2]);
 //        getRotZ(euler[1]);
         getRotationMatrix(robot);
-        getRotZ_cam2imu(-3.14159/2);
+        getRotZ_cam2imu(M_PI);
 
         pointMat << camPoint.x, camPoint.y, camPoint.z, 1;
 //        auto result =   RotY*RotX*RotZ*trans*RotZ2*pointMat; // ZXY
@@ -59,7 +60,7 @@ public:
 //        getRotY(euler[2]);
 //        getRotZ(euler[1]);
         getRotationMatrix(robot);
-        getRotZ_cam2imu(-3.14159/2);
+        getRotZ_cam2imu(M_PI);
 
         absPointMat << absPoint.x, absPoint.y, absPoint.z ,1;
 //        auto T = RotY*RotX*RotZ*trans*RotZ2;
@@ -143,9 +144,9 @@ private:
                 0,                       0, 0, 1;
     }
 
-    inline void getRotZ_cam2imu(double roll) {
-        RotZ2 << cos(roll), -sin(roll), 0, 0,
-                sin(roll), cos(roll), 0, 0,
+    inline void getRotZ_cam2imu(double angle) {
+        RotZ2 << cos(angle), -sin(angle), 0, 0,
+                sin(angle), cos(angle), 0, 0,
                 0,                       0, 1, 0,
                 0,                       0, 0, 1;
     }

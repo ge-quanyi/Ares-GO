@@ -71,14 +71,14 @@ private:
     std::unique_ptr<AngleSolver> anglesolver;
 
     inline void abs2motion(cv::Point3f &abs_p_,cv::Point3f& motion_p_){
-        motion_p_.x = abs_p_.x;
+        motion_p_.x = abs_p_.y;
         motion_p_.y = abs_p_.z;
-        motion_p_.z = -abs_p_.y;
+        motion_p_.z = -abs_p_.x;
     }
 
     inline void motion2abs(cv::Point3f &motion_p_, cv::Point3f& abs_p_){
-        abs_p_.x = motion_p_.x;
-        abs_p_.y = -motion_p_.z;
+        abs_p_.x = -motion_p_.z;
+        abs_p_.y = motion_p_.x;
         abs_p_.z = motion_p_.y;
     }
 
