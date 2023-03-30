@@ -35,6 +35,7 @@ public:
         // big armor
         //todo infantry3
         if(obj.cls==1){
+            std::cout<<"big armor!! \n";
             for (int i = 0; i < 4; i++){
                 tmp_point = {armor_big_pt[i][0],armor_big_pt[i][1],0};
                 object_corners.push_back(tmp_point);

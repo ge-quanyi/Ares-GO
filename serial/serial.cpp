@@ -381,7 +381,7 @@ int SerialPort::ReceiveBuff()
                 buff[4] = ((uint16_t)buff_r_[13]<<8)| uint8_t (buff_r_[14]); //speed
                 double q2 = double(buff[2])/1000; //角速度
                 double q3 = double(buff[3])/1000;
-                double bulled_speed = double(buff[4]);
+                double bulled_speed = double(buff[4])/1000;
 
                 //std::cout<<"bit8 "<<hex<<uint8_t(dst_buff[8])<<" "<<"bit9"<<hex<<uint8_t(dst_buff[9])<<std::endl;
 
@@ -392,7 +392,7 @@ int SerialPort::ReceiveBuff()
 //                    <<", q1: "<<q1
 //                    <<", q2: "<<q2
 //                    <<", q3: "<<q3
-////                    <<", pitch_w: "<<pitch_w  //抬头负，低头正
+//                    <<", speed d: "<<bulled_speed  //抬头负，低头正
 ////                    <<", yaw_w: "<<yaw_w
 //                    <<endl;  //顺时针负，逆时针正
                 return 1;

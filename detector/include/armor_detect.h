@@ -44,6 +44,7 @@ public:
 
     void run();
 private:
+    int img_send_cnt = 0;
     std::shared_ptr<PNPSolver> pnpsolver;
     std::unique_ptr<Tictok> tic;
 //    std::shared_ptr<OvInference> ovinfer;

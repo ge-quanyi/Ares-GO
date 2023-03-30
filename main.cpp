@@ -29,8 +29,10 @@ int main() {
     int bind = zmq_bind(publisher, "tcp://*:9000");
 
     while (1){
+
         cv::Mat src;
         src = display_sub_.subscribe();
+//        std::cout<<"send"<<"\n";
         std::vector<uchar> buffer;
         cv::imencode(".jpg", src, buffer);
         zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);

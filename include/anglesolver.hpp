@@ -17,7 +17,7 @@ public:
         // fs1["sentry_up"]["yaw_diff"]>>yaw_diff;
         // std::cout<<pitch_diff<<" "<<yaw_diff<<std::endl;
         // fs1.release();
-        pitch_diff = yaw_diff = 0;
+        pitch_diff = 0.06;
         trans <<1,0,0,  0.01,   //                     x
                 0,1,0,  -0.1788,   //-0.0455             y
                 0,0,1,  0.0056,  //0.1415              //z
@@ -81,7 +81,7 @@ public:
 
 
          //std::cout<<"ppppppppppppppppppppppppp "<<ptz_pitch<<std::endl;
-         double abs_pitch = pitch - ptz_pitch;
+         double abs_pitch = pitch + ptz_pitch;
          //abs_pitch = pitch + ptz_pitch;
          int if_fix = 1;
          if (if_fix) {
@@ -92,7 +92,7 @@ public:
  //        std::cout << "angle fix " << angle_fix << std::endl;
              abs_pitch += angle_fix;
          }
-         pitch = abs_pitch + ptz_pitch;
+         pitch = abs_pitch - ptz_pitch;
 
          pitch += pitch_diff;//-0.010
          yaw += yaw_diff;//-0.023

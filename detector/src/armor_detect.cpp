@@ -261,6 +261,7 @@ bool ArmorDetect::if_shoot(const cv::Point3f& cam_) {
     else
         return false;
 }
+
 void ArmorDetect::run() {
 
     while (true) {
@@ -276,8 +277,9 @@ void ArmorDetect::run() {
                 continue;
 
             RobotInfo robot_  = serial_sub_.subscribe();
+            if(robot_.bullet_speed == 0){robot_.bullet_speed=27;}
             as->getEuler(robot_);
-//            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
+            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
 //            std::cout<<"euler "<<as->euler[0]<< " "<<as->euler[1]<<" "<<as->euler[2]<<"\r\n";
 //            std::cout<<"q "<<robot_.q[0]<<" "<<robot_.q[1]<<" "<<robot_.q[2]<<" "<<robot_.q[3]<<"\r\n";
 //            std::vector<OvInference::Detection> results;
@@ -361,8 +363,12 @@ void ArmorDetect::run() {
 
             cv::putText(src, "fps " + std::to_string(autoaim_fps), cv::Point(15, 30),
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
-//            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
-            display_pub_.publish(src);
+            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
+            img_send_cnt++;
+            if(img_send_cnt>3){
+                display_pub_.publish(src);
+                img_send_cnt = 0;
+            }
         } catch (...) {
             std::cout << "[WARNING] camera not ready." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(200));

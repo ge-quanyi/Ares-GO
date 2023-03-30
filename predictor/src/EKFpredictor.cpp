@@ -71,7 +71,7 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
 
     Eigen::Matrix<double, 5, 1> Xe = ekf.update(measure, Yr);//best evalute
     double value = ekf.estimate();
-    if(value>10000){
+    if(value>0.5){
         inited = false;
     }
     std::cout<<"ekf estimate "<<value<<"\r\n";
