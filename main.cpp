@@ -34,7 +34,11 @@ int main() {
         src = display_sub_.subscribe();
 //        std::cout<<"send"<<"\n";
         std::vector<uchar> buffer;
-        cv::imencode(".jpg", src, buffer);
+        int quality = 60; //0-100
+        std::vector<int> compress_params;
+        compress_params.push_back(IMWRITE_JPEG_QUALITY);
+        compress_params.push_back(quality);
+        cv::imencode(".jpg", src, buffer, compress_params);
         zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);
     }
 

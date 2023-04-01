@@ -64,6 +64,8 @@ void Camera::camera_stream_thread() {
                 }
             }
             status = GXQBuf(cam0->hDevice_, pFrameBuffer);
+        }else{
+            std::cout<<"[error ]can not get camera frame ..\n";
         }
     }
 }

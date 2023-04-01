@@ -262,6 +262,8 @@ bool ArmorDetect::if_shoot(const cv::Point3f& cam_) {
         return false;
 }
 
+#define SEND_IMG 1
+
 void ArmorDetect::run() {
 
     while (true) {
@@ -365,7 +367,7 @@ void ArmorDetect::run() {
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
             fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
             img_send_cnt++;
-            if(img_send_cnt>3){
+            if(img_send_cnt>4){
                 display_pub_.publish(src);
                 img_send_cnt = 0;
             }
