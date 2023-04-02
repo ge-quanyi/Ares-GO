@@ -3,6 +3,7 @@ project(camera)
 
 find_package(OpenCV 3 REQUIRED)
 find_package(fmt)
+find_package(glog REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
@@ -11,3 +12,4 @@ add_library(${PROJECT_NAME} STATIC
                             src/camera.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} fmt::fmt /usr/lib/libgxiapi.so)
+target_link_libraries(${PROJECT_NAME} glog::glog)

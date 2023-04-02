@@ -28,5 +28,6 @@ private:
     std::unique_ptr<MercureDriver> cam0;
     PGX_FRAME_BUFFER pFrameBuffer;
     std::shared_ptr<Tictok> tic;
+    int camera_offline;
 };
 #endif //ARES_CV_CAMERA_H

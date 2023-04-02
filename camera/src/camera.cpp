@@ -5,9 +5,9 @@
 #include <opencv2/opencv.hpp>
 #include <fmt/core.h>
 #include <fmt/color.h>
-#include <mutex>
 #include <string.h>
 #include "../include/camera.h"
+#include "glog/logging.h"
 
 Publisher<Camdata> cam_publisher(1);
 
@@ -16,7 +16,8 @@ Camera::Camera(const char *SN, const int width, const int height) :
     tic = std::make_shared<Tictok>();
     GX_STATUS status = Config();
     if (status != GX_STATUS_SUCCESS) {
-        fmt::print(fg(fmt::color::red), "Config Camera Faile...");
+//        fmt::print(fg(fmt::color::red), "Config Camera Faile...");
+        LOG(ERROR) <<"Config Camera Failed...";
         exit(-1);
     }
     cam0_info.sn_str = cameraSN_;
@@ -25,16 +26,18 @@ Camera::Camera(const char *SN, const int width, const int height) :
     cam0 = std::make_unique<MercureDriver>(cam0_info);
     cam0->InitCamera();
     if (cam0->status != GX_STATUS_SUCCESS) {
-        fmt::print(fg(fmt::color::red), "Initial Camera Faile...");
+        LOG(ERROR) <<"Initial Camera Failed, Please check your camera ";
         exit(-1);
     }
 
     status = GXStreamOn(cam0->hDevice_);
     if (status != GX_STATUS_SUCCESS) {
-        fmt::print(fg(fmt::color::red), "Camera start stream error!!!");
+//        fmt::print(fg(fmt::color::red), "Camera start stream error!!!");
+        LOG(ERROR) <<"Camera start streaming error...";
         exit(-1);
     }
     origin_buff = new char[image_height * image_width * 3];
+    camera_offline = 0;
 }
 
 Camera::~Camera() {
@@ -65,7 +68,12 @@ void Camera::camera_stream_thread() {
             }
             status = GXQBuf(cam0->hDevice_, pFrameBuffer);
         }else{
-            std::cout<<"[error ]can not get camera frame ..\n";
+//            std::cout<<"[error ]can not get camera frame ..\n";
+            LOG(ERROR) << "can not get camera frame ...";
+            camera_offline++;
+            if(camera_offline>5){
+                LOG(FATAL) << "Camera offline more than 5 seconds, good bye !";
+            }
         }
     }
 }
