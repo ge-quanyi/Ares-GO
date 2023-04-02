@@ -13,6 +13,7 @@
 #include <thread>
 #include <fmt/core.h>
 #include <fmt/color.h>
+#include "glog/logging.h"
 
 Publisher<RobotInfo> serial_publisher(1);
 using namespace std;
@@ -435,7 +436,8 @@ void SerialPort::receive_thread() {
 //        std::cout<<"ssssssssssss"<<status<<std::endl;
         if(status == -1){
             while(!this->PortInit());
-            fmt::print(fg(fmt::color::red),"[Error] Serial offline, try to restart..");
+//            fmt::print(fg(fmt::color::red),"[Error] Serial offline, try to restart..");
+            LOG(WARNING) << "[Error] Serial offline, try to restart..";
         }
     }
 }

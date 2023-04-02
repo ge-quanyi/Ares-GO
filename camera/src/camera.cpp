@@ -73,6 +73,7 @@ void Camera::camera_stream_thread() {
             camera_offline++;
             if(camera_offline>5){
                 LOG(FATAL) << "Camera offline more than 5 seconds, good bye !";
+//                exit(-1);
             }
         }
     }

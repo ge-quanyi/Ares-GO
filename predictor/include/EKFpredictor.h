@@ -10,7 +10,7 @@
 #include "anglesolver.hpp"
 #include "../../include/data_type.h"
 #include "AdaptiveEKF.hpp"
-
+#include <memory>
 
 struct Predict {
     /*
@@ -60,7 +60,7 @@ private:
     double last_time;
     double last_dis = 0;
 
-    AdaptiveEKF<5, 3> ekf;
+    std::shared_ptr<AdaptiveEKF<5, 3>> ekf;
 
 
     RobotInfo robot_;
@@ -69,6 +69,7 @@ private:
     std::vector<Armor> armor_seq;
     Armor current_armor;
     std::unique_ptr<AngleSolver> anglesolver;
+    void read_params();
 
     inline void abs2motion(cv::Point3f &abs_p_,cv::Point3f& motion_p_){
         motion_p_.x = abs_p_.y;

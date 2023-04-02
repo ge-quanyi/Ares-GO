@@ -2,34 +2,38 @@
 
 EKFPredictor::EKFPredictor() {
     cv::FileStorage fin("../params/params.yaml", cv::FileStorage::READ);
-
     if(!fin.isOpened()){
         std::cout<<"[ERROR ]predictor open params file error, please check \r\n";
         exit(-1);
     }
+    ekf = std::make_shared<AdaptiveEKF<5,3>>();
 
-    fin["sentry_up"]["Q00"] >> ekf.Q(0, 0);
-    fin["sentry_up"]["Q11"] >> ekf.Q(1, 1);
-    fin["sentry_up"]["Q22"] >> ekf.Q(2, 2);
-    fin["sentry_up"]["Q33"] >> ekf.Q(3, 3);
-    fin["sentry_up"]["Q44"] >> ekf.Q(4, 4);
+    fin["sentry_up"]["Q00"] >> ekf->Q(0, 0);
+    fin["sentry_up"]["Q11"] >> ekf->Q(1, 1);
+    fin["sentry_up"]["Q22"] >> ekf->Q(2, 2);
+    fin["sentry_up"]["Q33"] >> ekf->Q(3, 3);
+    fin["sentry_up"]["Q44"] >> ekf->Q(4, 4);
     // 观测过程协方差
-    fin["sentry_up"]["R00"] >> ekf.R(0, 0);
-    fin["sentry_up"]["R11"] >> ekf.R(1, 1);
-    fin["sentry_up"]["R22"] >> ekf.R(2, 2);
-    std::cout<<"QR matrix: "<<ekf.Q <<"\r\n "<<ekf.R<<std::endl;
+    fin["sentry_up"]["R00"] >> ekf->R(0, 0);
+    fin["sentry_up"]["R11"] >> ekf->R(1, 1);
+    fin["sentry_up"]["R22"] >> ekf->R(2, 2);
+    std::cout<<"QR matrix: "<<ekf->Q <<"\r\n "<<ekf->R<<std::endl;
     fin.release();
     anglesolver = std::make_unique<AngleSolver>();
+}
+
+void EKFPredictor::read_params() {
+
 }
 void EKFPredictor::reset() {
 
     last_dis = current_armor.distance;
     Eigen::Matrix<double, 5, 1> Xr;
     Xr << current_armor.world_point_.x, 0, current_armor.world_point_.y, 0, current_armor.world_point_.z;
-    ekf.init(Xr);
+    ekf->init(Xr);
     armor_seq.clear();
-    ekf.P.setIdentity();
-    std::cout<<"P reset "<<ekf.P<<"\r\n";
+    ekf->P.setIdentity();
+    std::cout<<" reset "<<"\r\n";
 }
 
 void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const RobotInfo& robot) {
@@ -65,13 +69,13 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
     measure(Xr.data(), Yr.data());  //convert xyz to pitch yaw
 
     predictfunc.delta_t = delta_t;
-    ekf.predict(predictfunc);//predict
+    ekf->predict(predictfunc);//predict
 
 
 
-    Eigen::Matrix<double, 5, 1> Xe = ekf.update(measure, Yr);//best evalute
-    double value = ekf.estimate();
-    if(value>0.5){
+    Eigen::Matrix<double, 5, 1> Xe = ekf->update(measure, Yr);//best evalute
+    double value = ekf->estimate();
+    if(value>1){
         inited = false;
     }
     std::cout<<"ekf estimate "<<value<<"\r\n";
