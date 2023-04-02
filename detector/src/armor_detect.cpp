@@ -359,7 +359,7 @@ void ArmorDetect::run() {
             delete[] send_data;
             tic->fps_calculate(autoaim_fps);
             if(final_obj.cls>0){
-                cv::putText(src, "id " + std::to_string(locked_id)+"color: "+std::to_string(final_obj.color), cv::Point(final_obj.apex[0].x-5, final_obj.apex[0].y-5),
+                cv::putText(src, "id " + std::to_string(locked_id)+" color: "+std::to_string(final_obj.color), cv::Point(final_obj.apex[0].x-5, final_obj.apex[0].y-5),
                             cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(0, 0, 255));
             }
 
@@ -367,7 +367,7 @@ void ArmorDetect::run() {
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
             fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
             img_send_cnt++;
-            if(img_send_cnt>4){
+            if(img_send_cnt>3){
                 display_pub_.publish(src);
                 img_send_cnt = 0;
             }
