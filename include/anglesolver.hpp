@@ -19,8 +19,8 @@ public:
         // fs1.release();
         pitch_diff = 0.06;
         trans <<1,0,0,  0.01,   //                     x
-                0,1,0,  -0.1788,   //-0.0455             y
-                0,0,1,  0.0056,  //0.1415              //z
+                0,1,0,  0,   //-0.0455             y
+                0,0,1,  0.02,  //0.1415              //z
                 0,0,0,  1;
     }
     ~AngleSolver()=default;
@@ -28,14 +28,14 @@ public:
     double euler[3];//p y r
 
     void getEuler(const RobotInfo& robot){
-        euler[0] = asin(-2*(robot.q[1]*robot.q[3] - robot.q[0]*robot.q[2]));
-        euler[1] = atan2(2*(robot.q[0]*robot.q[3]+robot.q[1]*robot.q[2]), 2*(robot.q[0]*robot.q[0]+robot.q[1]*robot.q[1]) -1);
-        euler[2] = atan2(2*(robot.q[0]*robot.q[1]+robot.q[2]*robot.q[3]), 2*(robot.q[0]*robot.q[0]+robot.q[3]*robot.q[3]) -1);
+        euler[0] = -asin(-2*(robot.q[1]*robot.q[3] - robot.q[0]*robot.q[2]));
+        euler[1] = atan2(2*(robot.q[0]*robot.q[3]+robot.q[1]*robot.q[2]), 1-2*(robot.q[2]*robot.q[2]+robot.q[3]*robot.q[3]) );
+        euler[2] = atan2(2*(robot.q[0]*robot.q[1]+robot.q[2]*robot.q[3]), 1-2*(robot.q[1]*robot.q[1]+robot.q[2]*robot.q[2]) );
 
     }
 
     void getRotationMatrix(const RobotInfo& robot){
-        getEuler(robot);
+//        getEuler(robot);
         Rotation << 1-2*(robot.q[2]*robot.q[2] + robot.q[3]*robot.q[3]), 2*(robot.q[1]*robot.q[2]-robot.q[0]*robot.q[3]), 2*(robot.q[1]*robot.q[3]+robot.q[0]*robot.q[2]), 0,
                    2*(robot.q[1]*robot.q[2]+robot.q[0]*robot.q[3]), 1-2*(robot.q[1]*robot.q[1]+robot.q[3]*robot.q[3]), 2*(robot.q[2]*robot.q[3]-robot.q[0]*robot.q[1]), 0,
                    2*(robot.q[1]*robot.q[3] -robot.q[0]*robot.q[2]), 2*(robot.q[2]*robot.q[3]+robot.q[0]*robot.q[1]), 1-2*(robot.q[1]*robot.q[1]+robot.q[2]*robot.q[2]), 0,
@@ -51,7 +51,7 @@ public:
 
         pointMat << camPoint.x, camPoint.y, camPoint.z, 1;
 //        auto result =   RotY*RotX*RotZ*trans*RotZ2*pointMat; // ZXY
-        auto result =   Rotation*trans*RotZ2*pointMat; // ZXY
+        auto result =   Rotation*trans*pointMat; // ZXY
         return cv::Point3f (result(0,0),result(1,0),result(2,0));
     }
 
@@ -64,7 +64,7 @@ public:
 
         absPointMat << absPoint.x, absPoint.y, absPoint.z ,1;
 //        auto T = RotY*RotX*RotZ*trans*RotZ2;
-        auto T = Rotation*trans*RotZ2;
+        auto T = Rotation*trans;
         auto camPointMat = T.inverse()*absPointMat;
         return cv::Point3f (camPointMat(0,0),camPointMat(1,0),camPointMat(2,0));
 

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <memory>
 #include <thread>
-#include <mutex>
 #include "serial/serial.h"
 #include "camera/include/camera.h"
 #include "detector/include/armor_detect.h"
@@ -24,7 +23,7 @@ int main(int argc, char* argv[]) {
     LOG(INFO) << "Ares2023 Computer Vision Start!!!";
 
     serial = std::make_shared<SerialPort>("/dev/stm", 115200);
-    wit_motion = std::make_shared<WT>("/dev/ttyUSB0",115200);
+    wit_motion = std::make_shared<WT>("/dev/imu",115200);
     camera = std::make_shared<Camera>("KE0200120159", 640, 480);
     autoaim = std::make_shared<ArmorDetect>();
 

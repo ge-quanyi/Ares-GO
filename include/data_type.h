@@ -11,7 +11,6 @@ struct RobotInfo{
 };
 struct WitInfo{
     double q[4];
-    double euler[3];
 };
 
 class Armor{

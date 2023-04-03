@@ -7,13 +7,13 @@
 #include <fmt/color.h>
 #include <thread>
 #include <mutex>
-
+#include "../../wit-motion/imu_receive.h"
 
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 Subscriber<RobotInfo> serial_sub_(&serial_publisher);
-Subscriber<WitInfo> wit_sub_(&wt_publisher);
 Publisher<cv::Mat> display_pub_(1);
 extern std::shared_ptr<SerialPort> serial;
+extern std::shared_ptr<WT> wit_motion;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
     pnpsolver = std::make_shared<PNPSolver>("../params/ost.yaml");
@@ -280,10 +280,16 @@ void ArmorDetect::run() {
                 continue;
 
             RobotInfo robot_  = serial_sub_.subscribe();
-            WitInfo wit_ = wit_sub_.subscribe();
-            std::cout<<"wit q"<<" "<<wit_.q[0]<<" "<<wit_.q[1]<<" "<<wit_.q[2]<<" "<<wit_.q[3]<<"\n";
-            if(robot_.bullet_speed == 0){robot_.bullet_speed=27;}
+            WitInfo wit_ = wit_motion->wt;
+            robot_.q[0] = wit_.q[0];
+            robot_.q[1] = wit_.q[1];
+            robot_.q[2] = wit_.q[2];
+            robot_.q[3] = wit_.q[3];
             as->getEuler(robot_);
+//            std::cout<<"wit q"<<" "<<wit_.q[0]<<" "<<wit_.q[1]<<" "<<wit_.q[2]<<" "<<wit_.q[3]<<"\n";
+//            std::cout<<"euler "<<" "<<as->euler[0]<<" "<<as->euler[1]<<" "<<as->euler[2]<<"\n";
+            if(robot_.bullet_speed == 0){robot_.bullet_speed=27;}
+//            as->getEuler(robot_);
 //            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
 //            std::cout<<"euler "<<as->euler[0]<< " "<<as->euler[1]<<" "<<as->euler[2]<<"\r\n";
 //            std::cout<<"q "<<robot_.q[0]<<" "<<robot_.q[1]<<" "<<robot_.q[2]<<" "<<robot_.q[3]<<"\r\n";
@@ -320,9 +326,10 @@ void ArmorDetect::run() {
                 cv::Point3f cam_pred;
                 predictor->predict(armor, cam_pred, robot_);
                 as->getAngle(cam_pred, pitch, yaw, dis, robot_);
+//                as->getAngle_nofix(cam_pred,pitch,yaw,dis);
                 cv::Point2f center_pred = pnpsolver->cam2pixel(cam_pred);
                 cv::circle(src,center_pred,5,cv::Scalar(0,0,255),-1);
-                std::cout<<"cam "<<cam_.y <<"  "<< cam_.z<<"\r\n";
+//                std::cout<<"cam "<<cam_.y <<"  "<< cam_.z<<"\r\n";
 
                 if(if_shoot(cam_))
                     cmd = 1;

@@ -43,6 +43,7 @@ public:
         return data;
     }
 
+
     Publisher<T>* m_publisher;
 private:
 

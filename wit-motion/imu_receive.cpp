@@ -13,7 +13,6 @@
 #include <math.h>
 #include "imu_receive.h"
 
-Publisher<WitInfo> wt_publisher(1);
 using namespace std;
 /*************************************************
 Function:       SerialPort
@@ -265,12 +264,12 @@ Others:
 
 bool WT::imudataSumCheck(char* buffer)
 {
-    char sum = 0;
+    short sum = 0;
     for(int i = 0; i < 10; i++){
         sum += *(buffer+i);
     }
-
-    if(sum == *(buffer+10))
+    char tmp = sum & 0xff;
+    if(tmp == *(buffer+10))
         return true;
     else 
         return false;
@@ -312,49 +311,45 @@ int WT::ReceiveBuff()
     size_t read_length = Read(buff_l_, COM_BUFF_LEN);
     // std::clog<<"llllllllllength "<<read_length<<std::endl;
     if (read_length == 0){return -1;}
-    //cout << src_buff[0] <<endl;
+//    cout << buff_l_[0] <<endl;
     static int cnt = 0;
-    if (buff_l_[0] == 0x55 && buff_l_[1] == 0x53 && buff_l_[11]==0x55 && buff_l_[12]==0x59)
+    if (buff_l_[0] == 0x55 ) //check head
     {
-//         cout<<"[info ] receive check head success "<<endl;
-        if(imudataSumCheck(buff_l_) && imudataSumCheck(buff_l_+11)){
-            cnt++;
-            cout<<"[info ] get data "<<cnt<<endl;
-            for(int i = 0; i<25;i++){
-                buff_r_[i] = buff_l_[i];
+
+//        std::cout<<"check q \n";
+
+//        if(buff_l_[1] == 0x53){ //angle
+//            if(imudataSumCheck(buff_l_)){
+//                memcpy(buff_r_, buff_l_,DATA_LEN);
+//                short data[3];  // x y z
+//                data[0] = (short)((uint16_t)buff_r_[3]<<8 | (unsigned char)buff_r_[2]);
+//                data[1] = (short)((uint16_t)buff_r_[5]<<8 | (unsigned char)buff_r_[4]);
+//                data[2] = (short)((uint16_t)buff_r_[7]<<8 | (unsigned char)buff_r_[6]);
+//
+//                double x_rote_angle = (double)((double)data[0] / 32768 * CV_PI);
+//                double y_rote_angle = (double)((double)data[1] / 32768 * CV_PI);
+//                double z_rote_angle = (double)((double)data[2] / 32768 * CV_PI);
+//
+//            }
+
+        if(buff_l_[1] == 0x59){ //q
+            if(imudataSumCheck(buff_l_)){
+                memcpy(buff_r_, buff_l_,DATA_LEN);
+                short tmp_q[4];
+                tmp_q[0] = (short)((uint16_t)buff_r_[3]<<8 | (unsigned char)buff_r_[2]);
+                tmp_q[1] = (short)((uint16_t)buff_r_[5]<<8 | (unsigned char)buff_r_[4]);
+                tmp_q[2] = (short)((uint16_t)buff_r_[7]<<8 | (unsigned char)buff_r_[6]);
+                tmp_q[3] = (short)((uint16_t)buff_r_[9]<<8 | (unsigned char)buff_r_[8]);
+
+                double q0 = (double)((double)tmp_q[0]/32768.0);
+                double q1 = (double)((double)tmp_q[1]/32768.0);
+                double q2 = (double)((double)tmp_q[2]/32768.0);
+                double q3 = (double)((double)tmp_q[3]/32768.0);
+                wt_lock.lock();
+                wt = {q0, q1,q2,q3};
+                wt_lock.unlock();
+
             }
-            short data[3];  // x y z
-            data[0] = (short)((uint16_t)buff_r_[3]<<8 | (unsigned char)buff_r_[2]);
-            data[1] = (short)((uint16_t)buff_r_[5]<<8 | (unsigned char)buff_r_[4]);
-            data[2] = (short)((uint16_t)buff_r_[7]<<8 | (unsigned char)buff_r_[6]);
-
-            double x_rote_angle = (double)((double)data[0] / 32768 * CV_PI);
-            double y_rote_angle = (double)((double)data[1] / 32768 * CV_PI);
-            double z_rote_angle = (double)((double)data[2] / 32768 * CV_PI);
-
-            short tmp_q[4];
-            tmp_q[0] = (short)((uint16_t)buff_r_[14]<<8 | (unsigned char)buff_r_[13]);
-            tmp_q[1] = (short)((uint16_t)buff_r_[16]<<8 | (unsigned char)buff_r_[15]);
-            tmp_q[2] = (short)((uint16_t)buff_r_[18]<<8 | (unsigned char)buff_r_[17]);
-            tmp_q[3] = (short)((uint16_t)buff_r_[20]<<8 | (unsigned char)buff_r_[19]);
-
-            double q0 = (double)((double)tmp_q[0]/32768.0);
-            double q1 = (double)((double)tmp_q[1]/32768.0);
-            double q2 = (double)((double)tmp_q[2]/32768.0);
-            double q3 = (double)((double)tmp_q[3]/32768.0);
-            WitInfo wt = {q0,q1,q2,q3,x_rote_angle,y_rote_angle,z_rote_angle};
-            wt_publisher.publish(wt);
-//            std::cout<<
-////                        "x angle "<<x_rote_angle<<
-////                       "y angle "<<y_rote_angle<<
-////                       "z angle "<<z_rote_angle<<
-////                       "\n"<<
-//                       " q0 "<<q0<<
-//                       " q1 "<<q1<<
-//                       " q2 "<<q2<<
-//                       " q3 "<<q3<<"\n";
-
-
         }else{
             //cout<<"[error ] receive check len error"<<endl;
             for (int i = 0; i < DATA_LEN; i++) {
@@ -362,16 +357,13 @@ int WT::ReceiveBuff()
             }
             return 0;
         }
-    }
-    else
-    {
+    }else{
         //cout<<"[error ] receive check head error "<<endl;
         //cout << "SERIAL error1" << endl;
         for (int i = 0; i < DATA_LEN; i++){
             buff_r_[i] = 0;
             //receive[i] = 0;
         }
-        // infor_clear();
         return 0;
     }
 }

@@ -6,11 +6,11 @@
 
 #include "data_type.h"
 #include "Message.hpp"
-
+#include <mutex>
 #define COMMAND_BUFF_LEN 50
 #define COM_BUFF_LEN 25
 #define HEAD_LEN 4
-#define DATA_LEN 25
+#define DATA_LEN 22
 
 
 class WT{
@@ -27,6 +27,8 @@ public:
     int ReceiveBuff();//接受数据
     void receive_thread();
 
+    WitInfo wt;
+
 private:
 
     int fd_;//串口文件
@@ -39,6 +41,6 @@ private:
 
     int Read(char *buff, size_t length);//串口读取
     bool Write(char *buff, size_t length);//写串口数据
-
+    std::mutex wt_lock;
 };
 

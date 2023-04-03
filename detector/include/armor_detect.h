@@ -19,7 +19,6 @@
 typedef std::pair<double, cv::Mat> Camdata;
 extern Publisher<Camdata> cam_publisher;
 extern Publisher<RobotInfo> serial_publisher;
-extern Publisher<WitInfo> wt_publisher;
 //use for traditional image process
 struct LightBar{
     float width;
