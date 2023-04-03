@@ -11,6 +11,7 @@
 
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 Subscriber<RobotInfo> serial_sub_(&serial_publisher);
+Subscriber<WitInfo> wit_sub_(&wt_publisher);
 Publisher<cv::Mat> display_pub_(1);
 extern std::shared_ptr<SerialPort> serial;
 ArmorDetect::ArmorDetect() {
@@ -279,9 +280,11 @@ void ArmorDetect::run() {
                 continue;
 
             RobotInfo robot_  = serial_sub_.subscribe();
+            WitInfo wit_ = wit_sub_.subscribe();
+            std::cout<<"wit q"<<" "<<wit_.q[0]<<" "<<wit_.q[1]<<" "<<wit_.q[2]<<" "<<wit_.q[3]<<"\n";
             if(robot_.bullet_speed == 0){robot_.bullet_speed=27;}
             as->getEuler(robot_);
-            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
+//            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
 //            std::cout<<"euler "<<as->euler[0]<< " "<<as->euler[1]<<" "<<as->euler[2]<<"\r\n";
 //            std::cout<<"q "<<robot_.q[0]<<" "<<robot_.q[1]<<" "<<robot_.q[2]<<" "<<robot_.q[3]<<"\r\n";
 //            std::vector<OvInference::Detection> results;

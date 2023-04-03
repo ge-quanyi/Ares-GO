@@ -41,8 +41,6 @@ private:
     void ISO14443AAppendCRCA(void* buffer, unsigned short byte_count);
     unsigned char ISO14443ACheckCRCA(void* buffer, unsigned short byte_count);
     bool ISO14443ACheckLen(unsigned  char* buffer);
-
-
 };
 
 #endif //ARESCV_SERIAL_H

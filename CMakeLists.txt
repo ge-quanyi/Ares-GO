@@ -18,6 +18,6 @@ add_subdirectory(serial)
 add_subdirectory(camera)
 add_subdirectory(detector)
 add_subdirectory(predictor)
-
+add_subdirectory(wit-motion)
 add_executable(Ares_CV main.cpp)
-target_link_libraries(Ares_CV  detector camera serial  predictor ${ZeroMQ_LIBRARY} glog::glog)
+target_link_libraries(Ares_CV   detector wit-motion camera serial  predictor  ${ZeroMQ_LIBRARY} glog::glog)

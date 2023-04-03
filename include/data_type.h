@@ -9,7 +9,10 @@ struct RobotInfo{
     double q[4];
     double bullet_speed;
 };
-
+struct WitInfo{
+    double q[4];
+    double euler[3];
+};
 
 class Armor{
 
