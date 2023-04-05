@@ -1,4 +1,5 @@
 #include "../include/EKFpredictor.h"
+#include "glog/logging.h"
 
 EKFPredictor::EKFPredictor() {
     cv::FileStorage fin("../params/params.yaml", cv::FileStorage::READ);
@@ -33,7 +34,8 @@ void EKFPredictor::reset() {
     ekf->init(Xr);
     armor_seq.clear();
     ekf->P.setIdentity();
-    std::cout<<" reset "<<"\r\n";
+//    std::cout<<" reset "<<"\r\n";
+    LOG(WARNING) << "ekf reset ";
 }
 
 void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const RobotInfo& robot) {
@@ -75,11 +77,13 @@ void EKFPredictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const Robo
 
     Eigen::Matrix<double, 5, 1> Xe = ekf->update(measure, Yr);//best evalute
     double value = ekf->estimate();
-    if(value>8.5){
+    if(value>100){
         inited = false;
     }
+    LOG(INFO)<<"ekf estimate "<< value;
     std::cout<<"ekf estimate "<<value<<"\r\n";
-    double predict_time = current_armor.distance/robot_.bullet_speed + 0.001;
+    double predict_time = current_armor.distance/robot_.bullet_speed + 0.14;
+    std::cout<<"predict time "<<predict_time<<"b speed "<<robot_.bullet_speed<<"\n";
 
     predictfunc.delta_t = predict_time;//use measure speed to predict next
     Eigen::Matrix<double, 5, 1> Xp;

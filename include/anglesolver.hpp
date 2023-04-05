@@ -17,7 +17,8 @@ public:
         // fs1["sentry_up"]["yaw_diff"]>>yaw_diff;
         // std::cout<<pitch_diff<<" "<<yaw_diff<<std::endl;
         // fs1.release();
-        pitch_diff = 0.06;
+        pitch_diff = 0.018;
+        yaw_diff = 0;
         trans <<1,0,0,  0.01,   //                     x
                 0,1,0,  0,   //-0.0455             y
                 0,0,1,  0.02,  //0.1415              //z

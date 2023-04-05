@@ -25,6 +25,11 @@ public:
         fx = K_.at<double>(0, 0);
         fy = K_.at<double>(1, 1);
     }
+    double inline get_distance(const cv::Point2f& p1, const cv::Point2f& p2){
+        return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2));
+    }
+
+
 
     inline cv::Point3f get_cam_point(const ArmorObject& obj){
         if(obj.cls<=0)
@@ -32,9 +37,14 @@ public:
         object_corners.clear();
         image_points.clear();
         cv::Point3f tmp_point;
+        double w = get_distance(obj.apex[0],obj.apex[3]);
+        double h = get_distance(obj.apex[0],obj.apex[1]);
+        double wh_rate = w/h;
+//        std::cout<<"wh rate "<<wh_rate<<"\n";
+
         // big armor
         //todo infantry3
-        if(obj.cls==1){
+        if(obj.cls==1 || wh_rate>3.3){
             std::cout<<"big armor!! \n";
             for (int i = 0; i < 4; i++){
                 tmp_point = {armor_big_pt[i][0],armor_big_pt[i][1],0};

@@ -12,7 +12,7 @@
 #include <thread>
 #include <math.h>
 #include "imu_receive.h"
-
+#include <glog/logging.h>
 using namespace std;
 /*************************************************
 Function:       SerialPort
@@ -52,7 +52,7 @@ int WT::OpenDev(const char *dev)
 {
     int fd = open(dev, O_RDWR | O_NOCTTY | O_NDELAY);//|O_NONBLOCK);
     if (fd == -1)
-        cout << "Open serial error!!!" << endl;
+        cout << "Open imu error!!!" << endl;
     else
         tcflush(fd, TCIOFLUSH);   // 清空输入输出缓存
 
@@ -376,6 +376,7 @@ void WT::receive_thread() {
         int status = this->ReceiveBuff();
         //std::cout<<"ssssssssssss"<<status<<std::endl;
         if(status == -1){   //serial offline test
+            LOG(ERROR)<<"imu serial offline";
             while(!this->PortInit());
          }
     }
