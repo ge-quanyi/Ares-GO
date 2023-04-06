@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 
     serial = std::make_shared<SerialPort>("/dev/stm", 115200);
     wit_motion = std::make_shared<WT>("/dev/imu",115200);
-    camera = std::make_shared<Camera>("KE0200120159", 640, 480);
+    camera = std::make_shared<Camera>("KE0200120159", 960, 768);
     autoaim = std::make_shared<ArmorDetect>();
 
     std::thread serial_thread(&SerialPort::receive_thread, serial);
@@ -41,6 +41,7 @@ int main(int argc, char* argv[]) {
 
         cv::Mat src;
         src = display_sub_.subscribe();
+        cv::resize(src,src,cv::Size(480,384));
 //        std::cout<<"send"<<"\n";
         std::vector<uchar> buffer;
         int quality = 60; //0-100

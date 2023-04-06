@@ -16,7 +16,7 @@ extern std::shared_ptr<SerialPort> serial;
 extern std::shared_ptr<WT> wit_motion;
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
-    pnpsolver = std::make_shared<PNPSolver>("../params/ost.yaml");
+    pnpsolver = std::make_shared<PNPSolver>("../params/daheng159.yaml");
 //    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     ovinfer = std::make_shared<Inference>("../detector/model/opt-0527-001.xml");
     predictor = std::make_shared<EKFPredictor>();

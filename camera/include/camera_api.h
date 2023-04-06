@@ -13,13 +13,13 @@ struct camera_config {
     std::string sn_str;
     char *SN;
     //设置ROI的宽度
-    int nWidth = 640;//960                  960          640             480
+    int nWidth = 960;//960                  960          640             480
     //设置ROI的高度
-    int nHeight = 480;//768                 768           640
+    int nHeight = 768;//768                 768           640
     //设置ROI的X方向偏移
-    int nOffsetX = 320;//160                160           320
+    int nOffsetX = 160;//160                160           320
     //设置ROI的Y方向偏移
-    int nOffsetY = 272;//128                128           192          272
+    int nOffsetY = 128;//128                128           192          272
     //是否开启触发模式
     int TriggerMode = 0;
     //设置触发源
