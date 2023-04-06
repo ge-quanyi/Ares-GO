@@ -1,13 +1,15 @@
 %YAML:1.0
 sentry_up:
-  pitch_diff: 0
-  yaw_diff: 0
-  Q00: 0.1
-  Q11: 100
-  Q22: 0.1
-  Q33: 100
-  Q44: 0.01
+  pitch_diff: 0.022
+  yaw_diff: 0.037
+  shoot_delay: 0.18
+  q00: 0.01
+  q11: 0.01
+  q22: 0.01
+  q33: 0.1
+  q44: 0.1
+  q55: 0.1
   # measure
-  R00: 1
-  R11: 1
-  R22: 800
+  r00: 0.05
+  r11: 0.05
+  r22: 0.05

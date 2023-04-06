@@ -9,7 +9,7 @@
 #include "../include/camera.h"
 #include "glog/logging.h"
 
-Publisher<Camdata> cam_publisher(1);
+Publisher<Camdata> cam_publisher(2);
 
 Camera::Camera(const char *SN, const int width, const int height) :
         image_width(width), image_height(height), cameraSN_(SN) {

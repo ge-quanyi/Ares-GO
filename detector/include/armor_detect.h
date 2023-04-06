@@ -10,6 +10,7 @@
 #include "Tictoc.hpp"
 #include "../include/ovinference.h"
 #include "../../predictor/include/EKFpredictor.h"
+#include "../../predictor/include/predictor.h"
 #include "../../serial/serial.h"
 #include "anglesolver.hpp"
 #include "Message.hpp"
@@ -19,6 +20,7 @@
 typedef std::pair<double, cv::Mat> Camdata;
 extern Publisher<Camdata> cam_publisher;
 extern Publisher<RobotInfo> serial_publisher;
+extern std::shared_ptr<SerialPort> serial;
 //use for traditional image process
 struct LightBar{
     float width;
@@ -48,7 +50,8 @@ private:
     std::unique_ptr<Tictok> tic;
 //    std::shared_ptr<OvInference> ovinfer;
     std::shared_ptr<Inference> ovinfer;
-    std::shared_ptr<EKFPredictor> predictor;
+    std::shared_ptr<EKFPredictor> ekfpredictor;
+    std::shared_ptr<Predictor> kfpredictor;
     std::shared_ptr<AngleSolver> as;
     int8_t locked_id = 0;
     int lose_cnt = 0;

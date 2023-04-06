@@ -29,12 +29,13 @@ public:
     int ReceiveBuff();//接受数据
     void receive_thread();
     void get_robot_data(RobotInfo& robot);
+    RobotInfo robot_;
 
 private:
     int fd_;//串口文件
     const char* devices;
     const int baudrate;
-
+    std::mutex port_mutex_;
     int OpenDev(const char *dev);
     bool SetSpeed(int fd, int speed);
     bool SetParity(int &fd, int data_bits, char parity, int stop_bits);

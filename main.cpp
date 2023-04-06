@@ -8,13 +8,14 @@
 #include "zmq.hpp"
 #include "glog/logging.h"
 #include "wit-motion/imu_receive.h"
-
+#include "debug.h"
 std::shared_ptr<SerialPort> serial;
 std::shared_ptr<Camera> camera;
 std::shared_ptr<ArmorDetect> autoaim;
 std::shared_ptr<WT> wit_motion;
 extern Publisher<cv::Mat> display_pub_;
 Subscriber<cv::Mat> display_sub_(&display_pub_);
+
 
 int main(int argc, char* argv[]) {
 
@@ -28,7 +29,7 @@ int main(int argc, char* argv[]) {
     autoaim = std::make_shared<ArmorDetect>();
 
     std::thread serial_thread(&SerialPort::receive_thread, serial);
-    std::thread wit_thread(&WT::receive_thread, wit_motion);
+//    std::thread wit_thread(&WT::receive_thread, wit_motion);
     std::thread camera_thread(&Camera::camera_stream_thread, camera);
     std::thread autoaim_thread(&ArmorDetect::run, autoaim);
 
@@ -36,7 +37,7 @@ int main(int argc, char* argv[]) {
     void* publisher = zmq_socket(context,ZMQ_PUB);
     int bind = zmq_bind(publisher, "tcp://*:9000");
 
-
+#ifdef DEBUG
     while (1){
 
         cv::Mat src;
@@ -51,10 +52,11 @@ int main(int argc, char* argv[]) {
         cv::imencode(".jpg", src, buffer, compress_params);
         zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);
     }
+#endif
 
     autoaim_thread.join();
     camera_thread.join();
     serial_thread.join();
-    wit_thread.join();
+//    wit_thread.join();
 
 }

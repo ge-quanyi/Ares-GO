@@ -8,6 +8,7 @@
 #include <thread>
 #include <mutex>
 #include "../../wit-motion/imu_receive.h"
+#include "debug.h"
 
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 Subscriber<RobotInfo> serial_sub_(&serial_publisher);
@@ -19,7 +20,9 @@ ArmorDetect::ArmorDetect() {
     pnpsolver = std::make_shared<PNPSolver>("../params/daheng159.yaml");
 //    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     ovinfer = std::make_shared<Inference>("../detector/model/opt-0527-001.xml");
-    predictor = std::make_shared<EKFPredictor>();
+//    ovinfer = std::make_shared<Inference>("../detector/model/yolox16.xml");
+    ekfpredictor = std::make_shared<EKFPredictor>();
+    kfpredictor = std::make_shared<Predictor>("../params/params.yaml");
     as = std::make_shared<AngleSolver>();
 //    num_c = std::make_shared<Classifier>("../detector/model/fc.onnx", "../detector/model/label.txt", 0.7);
     std::cout<<"detector inited "<<std::endl;
@@ -278,17 +281,18 @@ void ArmorDetect::run() {
             time_stamp = data.first;
             if(src.empty())
                 continue;
-
-            RobotInfo robot_  = serial_sub_.subscribe();
-            WitInfo wit_ = wit_motion->wt;
-            robot_.q[0] = wit_.q[0];
-            robot_.q[1] = wit_.q[1];
-            robot_.q[2] = wit_.q[2];
-            robot_.q[3] = wit_.q[3];
+//            RobotInfo robot_  = serial_sub_.subscribe();
+            RobotInfo robot_ = serial->robot_;
+//            WitInfo wit_ = wit_motion->wt;
+//            robot_.q[0] = wit_.q[0];
+//            robot_.q[1] = wit_.q[1];
+//            robot_.q[2] = wit_.q[2];
+//            robot_.q[3] = wit_.q[3];
             as->getEuler(robot_);
 //            std::cout<<"wit q"<<" "<<wit_.q[0]<<" "<<wit_.q[1]<<" "<<wit_.q[2]<<" "<<wit_.q[3]<<"\n";
 //            std::cout<<"euler "<<" "<<as->euler[0]<<" "<<as->euler[1]<<" "<<as->euler[2]<<"\n";
             if(robot_.bullet_speed == 0){robot_.bullet_speed=27;}
+            if(robot_.bullet_speed < 15){robot_.bullet_speed = 15;}
 //            as->getEuler(robot_);
 //            std::cout<<"robot speed "<<robot_.bullet_speed<<"\r\n";
 //            std::cout<<"euler "<<as->euler[0]<< " "<<as->euler[1]<<" "<<as->euler[2]<<"\r\n";
@@ -324,17 +328,23 @@ void ArmorDetect::run() {
                 armor.cam_point_ = cam_;
                 armor.id = final_obj.cls;
                 cv::Point3f cam_pred;
-                predictor->predict(armor, cam_pred, robot_);
+#ifdef EKF
+                ekfpredictor->predict(armor, cam_pred, robot_);
+#else
+                kfpredictor->predict(armor, cam_pred, robot_);
+#endif
                 as->getAngle(cam_pred, pitch, yaw, dis, robot_);
 //                as->getAngle_nofix(cam_pred,pitch,yaw,dis);
                 cv::Point2f center_pred = pnpsolver->cam2pixel(cam_pred);
-                cv::circle(src,center_pred,5,cv::Scalar(0,0,255),-1);
+                cv::circle(src,center_pred,10,cv::Scalar(0,0,255),-1);
 //                std::cout<<"cam "<<cam_.y <<"  "<< cam_.z<<"\r\n";
 
                 if(if_shoot(cam_))
                     cmd = 1;
                 else
                     cmd = 0;
+
+                if(dis>10){final_obj.cls==0;}
             }
 //
             if (final_obj.cls > 0) {
@@ -358,7 +368,6 @@ void ArmorDetect::run() {
             }
             char *send_data = new char[6];
 
-
             send_data[0] = int16_t(1000 * pitch);
             send_data[1] = int16_t(1000 * pitch) >> 8;
             send_data[2] = int16_t(1000 * yaw);
@@ -375,12 +384,16 @@ void ArmorDetect::run() {
 
             cv::putText(src, "fps " + std::to_string(autoaim_fps), cv::Point(15, 30),
                         cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(255, 0, 0));
-            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}. \r\n", pitch, yaw, dis);
+            fmt::print(fg(fmt::color::green), "object data :pitch {:.3f},yaw {:.3f}, dis {:.3f}, FPS {}. \r\n", pitch, yaw, dis, autoaim_fps);
+
+
+#ifdef DEBUG
             img_send_cnt++;
             if(img_send_cnt>3){
                 display_pub_.publish(src);
                 img_send_cnt = 0;
             }
+#endif
         } catch (...) {
             std::cout << "[WARNING] camera not ready." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
