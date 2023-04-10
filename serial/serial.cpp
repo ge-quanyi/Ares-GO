@@ -15,7 +15,7 @@
 #include <fmt/color.h>
 #include "glog/logging.h"
 
-//Publisher<RobotInfo> serial_publisher(2);
+Publisher<RobotInfo> serial_publisher(2);
 using namespace std;
 /*************************************************
 Function:       SerialPort
@@ -32,7 +32,7 @@ SerialPort::SerialPort(const char *id, const int speed) :
     {
         buff_w_[i] = 0;
         buff_r_[i] = 0;
-        buff_l_[i] = 0;
+//        buff_l_[i] = 0;
     }
 }
 /*************************************************
@@ -389,8 +389,8 @@ int SerialPort::ReceiveBuff()
                 port_mutex_.lock();
                 robot_ =  {buff_r_[4], q0,q1,q2,q3,double(bulled_speed)};
                 port_mutex_.unlock();
-//                RobotInfo robot = {buff_r_[4], q0,q1,q2,q3,double(bulled_speed)};
-//                serial_publisher.publish(robot);
+                RobotInfo robot = {buff_r_[4], q0,q1,q2,q3,double(bulled_speed)};
+                serial_publisher.publish(robot);
 //                cout<<"port buff: "
 //                    <<" q0: "<<q0
 //                    <<", q1: "<<q1

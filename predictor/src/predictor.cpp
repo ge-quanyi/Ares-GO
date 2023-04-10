@@ -84,8 +84,13 @@ void Predictor::predict(const Armor& armor,  cv::Point3f& cam_pred,const RobotIn
     Dk=kf->H*kf->P.inverse()*kf->H.transpose()+kf->R; //3x3
     auto rk = Ek.transpose()*Dk.inverse()*Ek;
     std::cout<<"rk "<<rk<<"\n";
+    if(armor_seq.size()>2){
+        double x_error = fabs(current_armor.world_point_.x-armor_seq.back().world_point_.x);
+//        std::cout<<"x dis "<<x_error<<"\n";
+    }
 
-    if(rk > 0.005){
+
+    if(rk > 0.006){
         inited = false;
     }
 

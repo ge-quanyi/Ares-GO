@@ -13,7 +13,7 @@
 
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
 //Subscriber<RobotInfo> serial_sub_(&serial_publisher);
-Publisher<cv::Mat> display_pub_(2);
+Publisher<cv::Mat> display_pub_(1);
 extern std::shared_ptr<SerialPort> serial;
 extern std::shared_ptr<WT> wit_motion;
 
@@ -99,10 +99,10 @@ void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &r
 
     if(locked_id > 0){
         cv::Rect tmp = final_obj.rect;
-        tmp.x -= 0.3*tmp.width;
+        tmp.x -= 0.5*tmp.width;
         tmp.y -= tmp.height;
         tmp.height += 2*tmp.height;
-        tmp.width += 0.6*tmp.width;
+        tmp.width += tmp.width;
 
         if(tmp.x<0){tmp.x=0;}
         if(tmp.y<0){tmp.y=0;}
@@ -312,6 +312,7 @@ void ArmorDetect::run() {
 //            RobotInfo robot_  = serial_sub_.subscribe();
 
             if(tracking_roi.width>0){
+                auto t0 = std::chrono::system_clock::now();
                 cv::rectangle(src,tracking_roi,cv::Scalar(255,0,0),2);
                 cv::Mat roi = src(tracking_roi);
                 cv::Mat dst(src.rows, src.cols,CV_8UC3,cv::Scalar(100,100,100));
@@ -319,6 +320,10 @@ void ArmorDetect::run() {
 //                cv::copyMakeBorder(roi,dst,add_top,add_bottom,add_left,add_right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
 //                copyMakeBorder(roi, dst,0,top,0,right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
                 src = dst;
+                auto t1 = std::chrono::system_clock::now();
+                double ppp = std::chrono::duration<double, milli>(t1-t0).count();
+                std::cout<<"pp"<<ppp<<"\n";
+
             }
 #ifdef TEST
             RobotInfo robot_ = {'r',0.999,0,0,0,22};

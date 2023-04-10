@@ -16,9 +16,9 @@
 class SerialPort
 {
 public:
-    char buff_w_[COM_BUFF_LEN]{}; // 发送的数据
-    char buff_r_[COM_BUFF_LEN]{}; // 读取的数据 校验之后的数据
-    char buff_l_[COM_BUFF_LEN]{}; // 读取数据缓存
+    char buff_w_[COM_BUFF_LEN]; // 发送的数据
+    char buff_r_[COM_BUFF_LEN]; // 读取的数据 校验之后的数据
+    char buff_l_[COM_BUFF_LEN]; // 读取数据缓存
     double receive[16]{};
     //char rrr[3];
     explicit SerialPort(const char* id, const int speed);//构造函数
