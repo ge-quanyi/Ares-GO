@@ -43,10 +43,9 @@ namespace ares{
             last_t = t;
             //predict
             X_hat_new = A*X_hat;
-
+            P = A*P*A.transpose() + Q;
         }
         void update(const Eigen::VectorXd& Y){
-            P = A*P*A.transpose() + Q;
             //update
             K = P*H.transpose()*(H*P*H.transpose()+R).inverse();
             X_hat_new = X_hat_new + K*(Y - H*X_hat_new);

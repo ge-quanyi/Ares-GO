@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 #include "wit-motion/imu_receive.h"
 #include "debug.h"
+
 std::shared_ptr<SerialPort> serial;
 std::shared_ptr<Camera> camera;
 std::shared_ptr<ArmorDetect> autoaim;
@@ -21,16 +22,20 @@ int main(int argc, char* argv[]) {
 
     FLAGS_log_dir = "../glog";
     google::InitGoogleLogging(argv[0]);
-    LOG(INFO) << "Ares2023 Computer Vision Start!!!";
+    LOG(INFO) << "Ares2023 Sentry Vision Start!!!";
+
+#ifndef TEST
 
     serial = std::make_shared<SerialPort>("/dev/stm", 115200);
-    wit_motion = std::make_shared<WT>("/dev/imu",115200);
+//    wit_motion = std::make_shared<WT>("/dev/imu",115200);
     camera = std::make_shared<Camera>("KE0200120159", 960, 768);
+#endif
     autoaim = std::make_shared<ArmorDetect>();
-
+#ifndef TEST
     std::thread serial_thread(&SerialPort::receive_thread, serial);
 //    std::thread wit_thread(&WT::receive_thread, wit_motion);
     std::thread camera_thread(&Camera::camera_stream_thread, camera);
+#endif
     std::thread autoaim_thread(&ArmorDetect::run, autoaim);
 
     void* context = zmq_ctx_new();
@@ -55,8 +60,10 @@ int main(int argc, char* argv[]) {
 #endif
 
     autoaim_thread.join();
+#ifndef TEST
     camera_thread.join();
     serial_thread.join();
+#endif
 //    wit_thread.join();
 
 }

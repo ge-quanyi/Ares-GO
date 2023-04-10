@@ -16,10 +16,10 @@
 class SerialPort
 {
 public:
-    char buff_w_[COM_BUFF_LEN]; // 发送的数据
-    char buff_r_[COM_BUFF_LEN]; // 读取的数据 校验之后的数据
-    char buff_l_[COM_BUFF_LEN]; // 读取数据缓存
-    double receive[16];
+    char buff_w_[COM_BUFF_LEN]{}; // 发送的数据
+    char buff_r_[COM_BUFF_LEN]{}; // 读取的数据 校验之后的数据
+    char buff_l_[COM_BUFF_LEN]{}; // 读取数据缓存
+    double receive[16]{};
     //char rrr[3];
     explicit SerialPort(const char* id, const int speed);//构造函数
     bool PortInit();//串口初始化
@@ -29,10 +29,10 @@ public:
     int ReceiveBuff();//接受数据
     void receive_thread();
     void get_robot_data(RobotInfo& robot);
-    RobotInfo robot_;
+    RobotInfo robot_{};
 
 private:
-    int fd_;//串口文件
+    int fd_{};//串口文件
     const char* devices;
     const int baudrate;
     std::mutex port_mutex_;

@@ -9,22 +9,25 @@
 #include <mutex>
 #include "../../wit-motion/imu_receive.h"
 #include "debug.h"
+#include "glog/logging.h"
 
 Subscriber<Camdata> cam_subscriber(&cam_publisher);
-Subscriber<RobotInfo> serial_sub_(&serial_publisher);
-Publisher<cv::Mat> display_pub_(1);
+//Subscriber<RobotInfo> serial_sub_(&serial_publisher);
+Publisher<cv::Mat> display_pub_(2);
 extern std::shared_ptr<SerialPort> serial;
 extern std::shared_ptr<WT> wit_motion;
+
 ArmorDetect::ArmorDetect() {
     tic = std::make_unique<Tictok>();
     pnpsolver = std::make_shared<PNPSolver>("../params/daheng159.yaml");
 //    ovinfer = std::make_shared<OvInference>("../detector/model/rm-net16.xml");
     ovinfer = std::make_shared<Inference>("../detector/model/opt-0527-001.xml");
 //    ovinfer = std::make_shared<Inference>("../detector/model/yolox16.xml");
-    ekfpredictor = std::make_shared<EKFPredictor>();
+//    ekfpredictor = std::make_shared<EKFPredictor>();
     kfpredictor = std::make_shared<Predictor>("../params/params.yaml");
     as = std::make_shared<AngleSolver>();
 //    num_c = std::make_shared<Classifier>("../detector/model/fc.onnx", "../detector/model/label.txt", 0.7);
+    tracking_roi = cv::Rect(0,0,0,0);
     std::cout<<"detector inited "<<std::endl;
 }
 
@@ -84,7 +87,7 @@ void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &r
 
             }
         } else {
-            for (const auto re: results) {
+            for (const auto &re: results) {
                 if (re.cls == locked_id) {
                     final_obj = re;
                     break;
@@ -93,6 +96,24 @@ void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &r
             lose_cnt++;
         }
     }
+
+    if(locked_id > 0){
+        cv::Rect tmp = final_obj.rect;
+        tmp.x -= 0.3*tmp.width;
+        tmp.y -= tmp.height;
+        tmp.height += 2*tmp.height;
+        tmp.width += 0.6*tmp.width;
+
+        if(tmp.x<0){tmp.x=0;}
+        if(tmp.y<0){tmp.y=0;}
+        if(tmp.width+tmp.x>src.cols){tmp.width = src.cols-tmp.x;}
+        if(tmp.height+tmp.y>src.rows){tmp.height = src.rows-tmp.y;}
+        tracking_roi = tmp;
+    }else{
+        tracking_roi = cv::Rect (0,0,0,0);
+    }
+
+
 }
 
 void ArmorDetect::draw_target(const ArmorObject &obj, cv::Mat &src) {
@@ -269,20 +290,41 @@ bool ArmorDetect::if_shoot(const cv::Point3f& cam_) {
 #define SEND_IMG 1
 
 void ArmorDetect::run() {
-
+#ifdef TEST
+    cv::VideoCapture cap(0);
+#endif
     while (true) {
 
         try {
             cv::Mat src;
             double time_stamp;
-            Camdata data = cam_subscriber.subscribe();
+#ifndef TEST
+            Camdata data = cam_subscriber.subscribe(); //传递value
 
-            src = data.second.clone();
+            src = data.second; //获取头即可
             time_stamp = data.first;
+#endif
+#ifdef TEST
+            cap.read(src);
+#endif
             if(src.empty())
                 continue;
 //            RobotInfo robot_  = serial_sub_.subscribe();
+
+            if(tracking_roi.width>0){
+                cv::rectangle(src,tracking_roi,cv::Scalar(255,0,0),2);
+                cv::Mat roi = src(tracking_roi);
+                cv::Mat dst(src.rows, src.cols,CV_8UC3,cv::Scalar(100,100,100));
+                roi.copyTo(dst(tracking_roi));
+//                cv::copyMakeBorder(roi,dst,add_top,add_bottom,add_left,add_right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
+//                copyMakeBorder(roi, dst,0,top,0,right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
+                src = dst;
+            }
+#ifdef TEST
+            RobotInfo robot_ = {'r',0.999,0,0,0,22};
+#else
             RobotInfo robot_ = serial->robot_;
+#endif
 //            WitInfo wit_ = wit_motion->wt;
 //            robot_.q[0] = wit_.q[0];
 //            robot_.q[1] = wit_.q[1];
@@ -374,7 +416,9 @@ void ArmorDetect::run() {
             send_data[3] = int16_t(1000 * yaw) >> 8;
             send_data[4] = int16_t(100 * dis);
             send_data[5] = int16_t(100 * dis) >> 8;
+#ifndef TEST
             bool status = serial->SendBuff(cmd, send_data, 6);
+#endif
             delete[] send_data;
             tic->fps_calculate(autoaim_fps);
             if(final_obj.cls>0){
@@ -395,6 +439,7 @@ void ArmorDetect::run() {
             }
 #endif
         } catch (...) {
+            LOG(ERROR)<<" AUTOAIM thread has certain errors. ";
             std::cout << "[WARNING] camera not ready." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }

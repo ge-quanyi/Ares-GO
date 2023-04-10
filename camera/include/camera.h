@@ -18,6 +18,7 @@ public:
     explicit Camera(const char* SN, const int width, const int height);
     ~Camera();
     void camera_stream_thread();
+    void stop_camera();
 
 private:
     const char *cameraSN_;
@@ -29,5 +30,6 @@ private:
     PGX_FRAME_BUFFER pFrameBuffer;
     std::shared_ptr<Tictok> tic;
     int camera_offline;
+    bool camera_start;
 };
 #endif //ARES_CV_CAMERA_H

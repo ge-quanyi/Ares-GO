@@ -38,14 +38,20 @@ Camera::Camera(const char *SN, const int width, const int height) :
     }
     origin_buff = new char[image_height * image_width * 3];
     camera_offline = 0;
+
+    camera_start = true;
 }
 
 Camera::~Camera() {
     delete[]origin_buff;
 }
 
+void Camera::stop_camera() {
+    camera_start = false;
+}
+
 void Camera::camera_stream_thread() {
-    while (true) {
+    while (camera_start) {
         GX_STATUS status = GXDQBuf(cam0->hDevice_, &pFrameBuffer, 1000);
         if (status == GX_STATUS_SUCCESS) {
             if (pFrameBuffer->nStatus == GX_FRAME_STATUS_SUCCESS) {
