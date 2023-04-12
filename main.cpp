@@ -48,13 +48,16 @@ int main(int argc, char* argv[]) {
     void* publisher = zmq_socket(context,ZMQ_PUB);
     int bind = zmq_bind(publisher, "tcp://*:9000");
     Record recorder;
-
+    int sub_status = -1;
 #ifdef DEBUG
     while (1){
 
         cv::Mat src;
-        src = display_sub_.subscribe();
-
+        src = display_sub_.subscribe(sub_status);
+        if(sub_status ==0){
+            continue;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
 //        cv::resize(src,src,cv::Size(480,384));
 //        std::cout<<"send"<<"\n";
         std::vector<uchar> buffer;

@@ -28,6 +28,7 @@ ArmorDetect::ArmorDetect() {
     as = std::make_shared<AngleSolver>();
 //    num_c = std::make_shared<Classifier>("../detector/model/fc.onnx", "../detector/model/label.txt", 0.7);
     tracking_roi = cv::Rect(0,0,0,0);
+    image_empty_cnt = 0;
     std::cout<<"detector inited "<<std::endl;
 }
 
@@ -299,8 +300,19 @@ void ArmorDetect::run() {
             cv::Mat src;
             double time_stamp;
 #ifndef TEST
-            Camdata data = cam_subscriber.subscribe(); //传递value
+            int DATA_STATUS = -1;
+            Camdata data = cam_subscriber.subscribe(DATA_STATUS); //传递value
+            if(!DATA_STATUS){
 
+                image_empty_cnt++;
+                std::cout<<"data queue is empty!! ,lose cnt "<<image_empty_cnt<<"\n";
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                continue;
+            }
+            if(image_empty_cnt>50){
+                LOG(FATAL)<<"CAN NOT GET IMAGE QUEUE ,exit";
+            }
+            image_empty_cnt = 0;
             src = data.second; //获取头即可
             time_stamp = data.first;
 #endif

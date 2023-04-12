@@ -71,5 +71,7 @@ private:
     void detect(cv::Mat& src, cv::Mat& dst, const int team, std::vector<OvInference::Detection>& objs);
     std::shared_ptr<Classifier> num_c;
 
+    int image_empty_cnt;
+
 };
 #endif //ARES_CV_ARMOR_DETECT_H

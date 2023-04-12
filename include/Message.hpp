@@ -33,11 +33,27 @@ class Subscriber{
 public:
     Subscriber(Publisher<T>* publisher) : m_publisher(publisher){};
 
-    T subscribe(){
+    T subscribe(int &status ){
         std::unique_lock<std::mutex> lock(m_publisher->m_mutex);
-        m_publisher->m_cond_var.wait(lock, [this](){return !m_publisher->m_data_queue.empty();});
-        T data = m_publisher->m_data_queue.front();
-        m_publisher->m_data_queue.pop();
+        T data;
+        if(!data_is_inited){
+            m_publisher->m_cond_var.wait(lock, [this](){return !m_publisher->m_data_queue.empty();});
+            data = m_publisher->m_data_queue.front();
+            data_init = data;
+            m_publisher->m_data_queue.pop();
+            data_is_inited = true;
+            status = 0;
+        }
+        if(data_is_inited){
+            if(m_publisher->m_data_queue.empty()){
+                data = data_init;
+                status = 0;
+            }else{
+                data = m_publisher->m_data_queue.front();
+                m_publisher->m_data_queue.pop();
+                status = 1;
+            }
+        }
         lock.unlock();
 //        std::cout<<" Received data "<<std::endl;
         return data;
@@ -45,6 +61,8 @@ public:
 
 
     Publisher<T>* m_publisher;
+    T data_init;
+    bool data_is_inited = false;
 private:
 
 };

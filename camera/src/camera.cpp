@@ -70,8 +70,13 @@ void Camera::camera_stream_thread() {
                     time_stamp = time_stamp/1000;
                     Camdata cam_data = std::make_pair(time_stamp, raw_image);
                     cam_publisher.publish(cam_data);
+                }else{
+                    std::cout<<"DX EOORR \n";
                 }
+            }else{
+                std::cout<<"frame error 1 \n";
             }
+
             status = GXQBuf(cam0->hDevice_, pFrameBuffer);
         }else{
 //            std::cout<<"[error ]can not get camera frame ..\n";

@@ -442,6 +442,7 @@ void SerialPort::receive_thread() {
             while(!this->PortInit());
 //            fmt::print(fg(fmt::color::red),"[Error] Serial offline, try to restart..");
             LOG(ERROR) << "[Error] Serial offline, try to restart..";
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
     }
 }
