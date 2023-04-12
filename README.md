@@ -106,7 +106,7 @@ KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="066
 cd <work_dir>
 git clone <remote_url>
 cd Ares_GO
-mkdir glog
+mkdir glog && mkdir video
 mkdir build && cd build
 cmake ..
 make 

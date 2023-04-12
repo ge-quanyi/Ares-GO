@@ -1,7 +1,7 @@
 %YAML:1.0
 sentry_up:
-  pitch_diff: 0.022
-  yaw_diff: 0.037
+  pitch_diff: 0.0
+  yaw_diff: 0.0
   shoot_delay: 0.18
   q00: 0.01
   q11: 0.01

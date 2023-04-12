@@ -10,7 +10,14 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Remote Host (32d03d9d-8680-4b54-92bb-686e5037322f)">
+      <paths name="infantry (03f0b6bb-b906-4262-b1aa-36176e78533c)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="sentry">
         <serverdata>
           <mappings>
             <mapping deploy="/workspace/Ares-GO" local="$PROJECT_DIR$" />
@@ -21,7 +28,7 @@
           </excludedPaths>
         </serverdata>
       </paths>
-      <paths name="sentry-up (8eb1a3dc-5c9e-4a0e-9379-579e82601544)">
+      <paths name="sentry_w">
         <serverdata>
           <mappings>
             <mapping deploy="/workspace/Ares-GO" local="$PROJECT_DIR$" />

@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 #include "wit-motion/imu_receive.h"
 #include "debug.h"
+#include "Record.hpp"
 
 std::shared_ptr<SerialPort> serial;
 std::shared_ptr<Camera> camera;
@@ -21,8 +22,13 @@ Subscriber<cv::Mat> display_sub_(&display_pub_);
 int main(int argc, char* argv[]) {
 
     FLAGS_log_dir = "../glog";
+    FLAGS_alsologtostderr = 1;
+    FLAGS_max_log_size = 100;
+    FLAGS_stop_logging_if_full_disk = true;
     google::InitGoogleLogging(argv[0]);
     LOG(INFO) << "Ares2023 Sentry Vision Start!!!";
+
+
 
 #ifndef TEST
 
@@ -41,13 +47,15 @@ int main(int argc, char* argv[]) {
     void* context = zmq_ctx_new();
     void* publisher = zmq_socket(context,ZMQ_PUB);
     int bind = zmq_bind(publisher, "tcp://*:9000");
+    Record recorder;
 
 #ifdef DEBUG
     while (1){
 
         cv::Mat src;
         src = display_sub_.subscribe();
-        cv::resize(src,src,cv::Size(480,384));
+
+//        cv::resize(src,src,cv::Size(480,384));
 //        std::cout<<"send"<<"\n";
         std::vector<uchar> buffer;
         int quality = 60; //0-100
@@ -56,6 +64,8 @@ int main(int argc, char* argv[]) {
         compress_params.push_back(quality);
         cv::imencode(".jpg", src, buffer, compress_params);
         zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);
+//        cv::Mat video = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+//        recorder.writeVideo(video);
     }
 #endif
 

@@ -405,7 +405,7 @@ int SerialPort::ReceiveBuff()
                 for (int i = 0; i < DATA_LEN; i++) {
                     buff_r_[i] = 0;
                 }
-                LOG(WARNING) << "serial check CRC error .";
+//                LOG(WARNING) << "serial check CRC error .";
                 return 0;
             }
 
@@ -414,7 +414,7 @@ int SerialPort::ReceiveBuff()
             for (int i = 0; i < DATA_LEN; i++) {
                 buff_r_[i] = 0;
             }
-            LOG(WARNING) << "serial check len error .";
+//            LOG(WARNING) << "serial check len error .";
             return 0;
         }
     }else{
@@ -424,7 +424,7 @@ int SerialPort::ReceiveBuff()
             buff_r_[i] = 0;
             //receive[i] = 0;
         }
-        LOG(WARNING) << "serial check head error .";
+//        LOG(WARNING) << "serial check head error .";
         // infor_clear();
         return 0;
     }
@@ -441,7 +441,7 @@ void SerialPort::receive_thread() {
         if(status == -1){
             while(!this->PortInit());
 //            fmt::print(fg(fmt::color::red),"[Error] Serial offline, try to restart..");
-            LOG(WARNING) << "[Error] Serial offline, try to restart..";
+            LOG(ERROR) << "[Error] Serial offline, try to restart..";
         }
     }
 }

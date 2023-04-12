@@ -117,10 +117,10 @@ void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &r
 }
 
 void ArmorDetect::draw_target(const ArmorObject &obj, cv::Mat &src) {
-    cv::line(src, obj.apex[0], obj.apex[2], cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.apex[1], obj.apex[3], cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.apex[0], obj.apex[1], cv::Scalar(0, 0, 255), 3);
-    cv::line(src, obj.apex[2], obj.apex[3], cv::Scalar(0, 0, 255), 3);
+    cv::line(src, obj.apex[0], obj.apex[2], cv::Scalar(0, 255, 0), 2);
+    cv::line(src, obj.apex[1], obj.apex[3], cv::Scalar(0, 255, 0), 2);
+    cv::line(src, obj.apex[0], obj.apex[1], cv::Scalar(0, 255, 0), 2);
+    cv::line(src, obj.apex[2], obj.apex[3], cv::Scalar(0, 255, 0), 2);
 }
 
 
@@ -314,15 +314,21 @@ void ArmorDetect::run() {
             if(tracking_roi.width>0){
                 auto t0 = std::chrono::system_clock::now();
                 cv::rectangle(src,tracking_roi,cv::Scalar(255,0,0),2);
-                cv::Mat roi = src(tracking_roi);
-                cv::Mat dst(src.rows, src.cols,CV_8UC3,cv::Scalar(100,100,100));
-                roi.copyTo(dst(tracking_roi));
-//                cv::copyMakeBorder(roi,dst,add_top,add_bottom,add_left,add_right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
+                cv::Mat roi = src(tracking_roi).clone();
+                cv::Mat dst;
+                int add_top = tracking_roi.y;
+                int add_bottom = src.rows-(tracking_roi.y+tracking_roi.height);
+                int add_left = tracking_roi.x;
+                int add_right = src.cols - (tracking_roi.x+tracking_roi.width);
+//                cv::Mat dst(src.rows, src.cols,CV_8UC3,cv::Scalar(100,100,100));
+//                roi.copyTo(dst(tracking_roi));
+                cv::copyMakeBorder(roi,dst,add_top,add_bottom,add_left,add_right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
 //                copyMakeBorder(roi, dst,0,top,0,right,cv::BORDER_CONSTANT,cv::Scalar(100,100,100));
+//                std::cout<<"dst size "<<dst.rows<<" "<<dst.cols<<"\n";
                 src = dst;
                 auto t1 = std::chrono::system_clock::now();
                 double ppp = std::chrono::duration<double, milli>(t1-t0).count();
-                std::cout<<"pp"<<ppp<<"\n";
+//                std::cout<<"pp"<<ppp<<"\n";
 
             }
 #ifdef TEST
@@ -383,7 +389,7 @@ void ArmorDetect::run() {
                 as->getAngle(cam_pred, pitch, yaw, dis, robot_);
 //                as->getAngle_nofix(cam_pred,pitch,yaw,dis);
                 cv::Point2f center_pred = pnpsolver->cam2pixel(cam_pred);
-                cv::circle(src,center_pred,10,cv::Scalar(0,0,255),-1);
+                cv::circle(src,center_pred,10,cv::Scalar(0,0,255),2);
 //                std::cout<<"cam "<<cam_.y <<"  "<< cam_.z<<"\r\n";
 
                 if(if_shoot(cam_))
