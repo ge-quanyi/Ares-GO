@@ -31,6 +31,6 @@ if __name__ == "__main__":
     receiver.connect("tcp://localhost:9000")
     receiver.setsockopt_string(zmq.SUBSCRIBE, "")
 
-    app.run(host="0.0.0.0", port=1121, threaded=True)
+    app.run(host="0.0.0.0", port=3200, threaded=True)
 
 

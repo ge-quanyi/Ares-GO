@@ -389,8 +389,9 @@ bool Inference::detect(Mat &src,std::vector<ArmorObject>& objects)
     }
 
     // auto t1 = std::chrono::steady_clock::now();
-    infer_request.StartAsync();
-    infer_request.Wait();
+    infer_request.Infer();
+//    infer_request.StartAsync();
+//    infer_request.Wait();
 
     auto moutputHolder = moutput->rmap();
     const float* net_pred = moutputHolder.as<const PrecisionTrait<Precision::FP32>::value_type*>();

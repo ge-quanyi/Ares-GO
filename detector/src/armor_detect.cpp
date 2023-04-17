@@ -50,6 +50,23 @@ void ArmorDetect::color_check(const char color, std::vector<ArmorObject> &result
 
 }
 
+void ArmorDetect::base_check(ArmorObject &final_obj) {
+    double w = get_distance(final_obj.apex[0],final_obj.apex[3]);
+    double h = get_distance(final_obj.apex[0],final_obj.apex[1]);
+    double wh_rate = w/h;
+    std::cout<<"wh rate cheack "<<wh_rate<<"\n";
+
+    if(wh_rate > 3 ){
+        if((final_obj.cls !=1 && final_obj.cls!=3 && final_obj.cls!=4) || (final_obj.prob < 0.95)){
+            final_obj.cls = 0;
+        }
+    }else{
+        if(((final_obj.cls != 3) && (final_obj.cls!=4)) || (final_obj.prob < 0.9)){
+            final_obj.cls = 0;
+        }
+    }
+}
+
 void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &results, cv::Mat &src) {
     if (results.size() == 0) {
         lose_cnt++;
@@ -97,6 +114,10 @@ void ArmorDetect::armor_sort(ArmorObject &final_obj, std::vector<ArmorObject> &r
             lose_cnt++;
         }
     }
+
+    //防止击打基地
+
+
 
     if(locked_id > 0){
         cv::Rect tmp = final_obj.rect;
@@ -302,16 +323,29 @@ void ArmorDetect::run() {
 #ifndef TEST
             int DATA_STATUS = -1;
             Camdata data = cam_subscriber.subscribe(DATA_STATUS); //传递value
+            if(image_empty_cnt>40){
+                LOG(FATAL)<<"CAN NOT GET IMAGE QUEUE ,exit";
+            }
             if(!DATA_STATUS){
+                double pitch, yaw, dis;
+                pitch = yaw = dis = 0;
+                char *send_data = new char[6];
 
+                send_data[0] = int16_t(1000 * pitch);
+                send_data[1] = int16_t(1000 * pitch) >> 8;
+                send_data[2] = int16_t(1000 * yaw);
+                send_data[3] = int16_t(1000 * yaw) >> 8;
+                send_data[4] = int16_t(100 * dis);
+                send_data[5] = int16_t(100 * dis) >> 8;
+
+                bool status = serial->SendBuff('0x30', send_data, 6);
+                delete[] send_data;
                 image_empty_cnt++;
-                std::cout<<"data queue is empty!! ,lose cnt "<<image_empty_cnt<<"\n";
+                LOG(INFO)<<"data queue is empty!! ,lose cnt " + to_string(image_empty_cnt)<<"\n";
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
-            if(image_empty_cnt>50){
-                LOG(FATAL)<<"CAN NOT GET IMAGE QUEUE ,exit";
-            }
+
             image_empty_cnt = 0;
             src = data.second; //获取头即可
             time_stamp = data.first;
@@ -374,7 +408,10 @@ void ArmorDetect::run() {
             ArmorObject final_obj;
             final_obj.cls = 0;           //check if armor
             armor_sort(final_obj, results, src);
-
+            if(final_obj.cls>0){ base_check(final_obj);}
+            if(final_obj.cls==0){
+                tracking_roi.width = 0;
+            }
             double pitch, yaw, dis;
             char cmd = 0;
             pitch = yaw = dis = 0;
@@ -445,7 +482,8 @@ void ArmorDetect::run() {
             delete[] send_data;
             tic->fps_calculate(autoaim_fps);
             if(final_obj.cls>0){
-                cv::putText(src, "id " + std::to_string(locked_id)+" color: "+std::to_string(final_obj.color), cv::Point(final_obj.apex[0].x-5, final_obj.apex[0].y-5),
+                cv::putText(src, "id " + std::to_string(locked_id)+" color: "+std::to_string(final_obj.color) + "conf "+
+                                                                                                                std::to_string(final_obj.prob), cv::Point(final_obj.apex[0].x-5, final_obj.apex[0].y-5),
                             cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(0, 0, 255));
             }
 

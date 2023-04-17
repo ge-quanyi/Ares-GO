@@ -72,6 +72,10 @@ private:
     std::shared_ptr<Classifier> num_c;
 
     int image_empty_cnt;
+    void base_check(ArmorObject& final_obj);
+    double inline get_distance(const cv::Point2f& p1, const cv::Point2f& p2){
+        return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2));
+    }
 
 };
 #endif //ARES_CV_ARMOR_DETECT_H

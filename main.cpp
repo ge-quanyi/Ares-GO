@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
             continue;
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
+//        recorder.writeVideo(src);
 //        cv::resize(src,src,cv::Size(480,384));
 //        std::cout<<"send"<<"\n";
         std::vector<uchar> buffer;
@@ -67,8 +68,8 @@ int main(int argc, char* argv[]) {
         compress_params.push_back(quality);
         cv::imencode(".jpg", src, buffer, compress_params);
         zmq_send(publisher,buffer.data(),buffer.size(), ZMQ_NOBLOCK);
-//        cv::Mat video = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-//        recorder.writeVideo(video);
+        cv::Mat video = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+        recorder.writeVideo(video);
     }
 #endif
 
