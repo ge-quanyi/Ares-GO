@@ -1,2 +1,5 @@
 build/
 glog/
+.cache/
+.idea/
+video/
